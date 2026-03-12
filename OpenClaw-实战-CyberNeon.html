@@ -683,7 +683,7 @@
                 <h2 class="reveal"><span class="num">01</span>OPENCLAW 是什么？</h2>
                 <div class="reveal">
                     <div class="card">
-                        <p style="font-size: var(--h3-size;">一款<span style="color: var(--cyan);">开源、自托管 AI Agent 框架</span>（Peter Steinberger 开发），像拥有"主动性"的数字员工，能操作电脑、浏览网页、处理文件，通过飞书/Telegram/微信执行指令。<span style="color: var(--text-muted);">（可运行在 Mac/Linux/云服务器，我选择 Mac Mini 是因为 7×24 运行、静音、省电）</span></p>
+                        <p style="font-size: var(--h3-size;">一款<span style="color: var(--cyan);">开源、自托管 AI Agent 框架</span>，像拥有"主动性"的数字员工，能操作电脑、浏览网页、处理文件，通过飞书/Telegram/微信执行指令。<span style="color: var(--text-muted);">（可运行在 Mac/Linux/云服务器，我选择 Mac Mini 是因为 7×24 运行、静音、省电）</span></p>
                         <p style="margin-top: 0.5rem; color: var(--text-muted);">关键词：7×24小时运行 · 定时任务 · 长期记忆 · 多Agents协作</p>
                     </div>
                 </div>
@@ -832,17 +832,14 @@
                     </div>
                 </div>
                 <div class="reveal" style="margin-top: 0.6rem;">
-                    <h3>📁 记忆文件结构</h3>
-                    <pre style="margin: 0;">openclaw/
-├── identity/           # 你的身份定义
-│   └── default.md     # 主身份文件
-├── soul/              # 对话风格
-│   └── default.md     # 说话方式
-├── memory/            # 长期记忆
-│   ├── 私聊.md        # 私聊记忆
-│   ├── 主群.md        # 主群记忆
-│   └── 量化群.md      # 量化群记忆
-└── openclaw.json      # 核心配置</pre>
+                    <h3>📁 工作目录结构</h3>
+                    <pre style="margin: 0;">~/.openclaw/workspace/
+├── IDENTITY.md   # 身份定义
+├── SOUL.md       # 对话风格
+├── MEMORY.md     # 长期记忆
+├── AGENTS.md     # 工作规范
+├── HEARTBEAT.md  # 心跳任务
+└── memory/       # 每日记忆</pre>
                 </div>
                 <div class="reveal" style="margin-top: 0.6rem;">
                     <h3>⚠️ 关键原则</h3>
@@ -1271,18 +1268,18 @@
                     </table>
                 </div>
                 <div class="reveal" style="margin-top: 0.6rem;">
-                    <h3>⚙️ 配置示例</h3>
-                    <pre style="margin: 0;">// openclaw.json heartbeat 配置
-{
-  "heartbeat": {
-    "enabled": true,
-    "tasks": [
-      { "name": "每日汇总", "schedule": "0 9 * * *" },
-      { "name": "A股报告", "schedule": "0 9 * * 1-5" },
-      { "name": "盘中监控", "schedule": "*/30 * * * *" }
-    ]
-  }
-}</pre>
+                    <h3>⚙️ 配置方式（CLI）</h3>
+                    <pre style="margin: 0;"># 添加定时任务
+openclaw cron add --name "每日汇总" --cron "0 9 * * *" --session isolated --message "请汇总今日要点"
+
+# 每天早上9点
+openclaw cron add --name "新闻播报" --cron "0 9 * * *" --session default --message "请播报今日新闻"
+
+# 工作日9点（A股报告）
+openclaw cron add --name "A股报告" --cron "0 9 * * 1-5" --session default --message "请生成今日A股报告"
+
+# 每30分钟（盘中监控）
+openclaw cron add --name "盘中监控" --cron "*/30 * * * *" --session isolated --message "请监控持仓股票"</pre>
                 </div>
             </div>
         </div>
