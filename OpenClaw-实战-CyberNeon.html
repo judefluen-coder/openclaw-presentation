@@ -305,6 +305,100 @@
             margin: 0.6rem 0;
         }
 
+        /* Carousel */
+        .carousel {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 1rem auto 0;
+            overflow: hidden;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            padding: 0.5rem;
+            box-sizing: border-box;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: auto;
+            max-height: 45vh;
+            object-fit: contain;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .carousel-caption {
+            text-align: center;
+            padding: 0.5rem;
+            color: var(--cyan);
+            font-size: var(--small-size);
+            font-family: var(--font-mono);
+        }
+
+        .carousel-nav {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+        }
+
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .carousel-dot.active {
+            background: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan);
+            transform: scale(1.2);
+        }
+
+        .carousel-dot:hover {
+            background: var(--cyan-dim);
+        }
+
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .carousel-arrow:hover {
+            background: var(--cyan);
+            color: var(--bg);
+        }
+
+        .carousel-arrow.prev { left: 10px; }
+        .carousel-arrow.next { right: 10px; }
+
         /* Tags */
         .tag {
             display: inline-block;
@@ -582,6 +676,12 @@
                     <span class="tag">#助手</span>
                 </div>
                 <p class="reveal subtitle">个人使用技巧与经验分享</p>
+                <p class="reveal" style="margin-top: 1.5rem; font-size: var(--small-size); color: #666;">
+                    by <span style="color: var(--cyan);">@jiangfeng14</span>
+                </p>
+                <p class="reveal" style="margin-top: 0.5rem; font-size: var(--small-size); color: #555;">
+                    Made with <a href="https://github.com/zarazhangrui/frontend-slides" style="color: var(--pink);" target="_blank">Claude Code + frontend-slides</a>
+                </p>
             </div>
         </div>
     </section>
@@ -671,6 +771,22 @@
         </div>
     </section>
 
+    <!-- TRANSITION: CONCEPTS -->
+    <section class="slide" id="slide-transition-2">
+        <div class="grid-bg"></div>
+        <div class="orb orb-purple"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label" style="font-size: var(--h2-size);">02</p>
+                <h1 class="reveal" style="font-size: clamp(2rem, 6vw, 4rem);">核心概念</h1>
+                <p class="reveal subtitle">模型、Agent、OpenClaw 的关系</p>
+            </div>
+        </div>
+    </section>
+
     <!-- SLIDE 3: What is OpenClaw -->
     <section class="slide" id="slide-3">
         <div class="grid-bg"></div>
@@ -741,35 +857,64 @@
                 </div>
                 <div class="reveal" style="margin-top: 0.8rem;">
                     <!-- Visual Hierarchy Diagram -->
-                    <div style="background: rgba(0,255,255,0.05); border: 2px solid var(--cyan); border-radius: 12px; padding: 1.5rem; position: relative;">
-                        <p style="text-align: center; color: var(--cyan); font-family: var(--font-display); margin-bottom: 1rem;">OPENCLAW 多Agent协作平台</p>
-                        <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 1rem;">
-                            <div style="background: var(--bg-card); border: 2px solid var(--cyan); border-radius: 8px; padding: 1rem; text-align: center; min-width: 100px; box-shadow: 0 0 15px var(--cyan-dim);">
-                                <p style="color: var(--cyan); font-weight: 700; margin: 0;">Agent A</p>
-                                <p style="color: var(--text-muted); font-size: var(--small-size); margin: 0.3rem 0 0;">专业能力</p>
+                    <div style="background: rgba(0,255,255,0.05); border: 2px solid var(--cyan); border-radius: 12px; padding: 1.2rem; position: relative;">
+                        <p style="text-align: center; color: var(--cyan); font-family: var(--font-display); margin-bottom: 0.8rem;">🖥️ OpenClaw 架构图</p>
+                        <!-- Top Layer: OpenClaw -->
+                        <div style="background: linear-gradient(135deg, rgba(0,255,255,0.1), rgba(0,255,255,0.05)); border: 2px solid var(--cyan); border-radius: 10px; padding: 0.8rem; margin-bottom: 0.6rem; text-align: center;">
+                            <p style="color: var(--cyan); font-weight: 700; margin: 0;">🏢 OpenClaw 工作室</p>
+                            <p style="color: var(--text-muted); font-size: var(--small-size); margin: 0.3rem 0 0;">多Agents协作平台 + Skills扩展 + Heartbeat定时</p>
+                        </div>
+                        <!-- Arrow down -->
+                        <p style="text-align: center; color: var(--cyan); margin: 0.2rem 0;">⬇️ 分配任务</p>
+                        <!-- Middle Layer: Agents -->
+                        <div style="display: flex; justify-content: center; gap: 0.6rem; margin-bottom: 0.5rem;">
+                            <div style="background: var(--bg-card); border: 2px solid var(--pink); border-radius: 8px; padding: 0.6rem 0.8rem; text-align: center; flex: 1; max-width: 120px; box-shadow: 0 0 15px rgba(255,0,128,0.2);">
+                                <p style="color: var(--pink); font-weight: 700; margin: 0; font-size: var(--small-size);">👤 Agent A</p>
+                                <p style="color: var(--text-muted); font-size: 0.65rem; margin: 0.2rem 0 0;">记账专家</p>
                             </div>
-                            <div style="background: var(--bg-card); border: 2px solid var(--cyan); border-radius: 8px; padding: 1rem; text-align: center; min-width: 100px; box-shadow: 0 0 15px var(--cyan-dim);">
-                                <p style="color: var(--cyan); font-weight: 700; margin: 0;">Agent B</p>
-                                <p style="color: var(--text-muted); font-size: var(--small-size); margin: 0.3rem 0 0;">专业能力</p>
+                            <div style="background: var(--bg-card); border: 2px solid var(--purple); border-radius: 8px; padding: 0.6rem 0.8rem; text-align: center; flex: 1; max-width: 120px; box-shadow: 0 0 15px rgba(128,0,255,0.2);">
+                                <p style="color: var(--purple); font-weight: 700; margin: 0; font-size: var(--small-size);">👤 Agent B</p>
+                                <p style="color: var(--text-muted); font-size: 0.65rem; margin: 0.2rem 0 0;">天气播报员</p>
                             </div>
-                            <div style="background: var(--bg-card); border: 2px solid var(--cyan); border-radius: 8px; padding: 1rem; text-align: center; min-width: 100px; box-shadow: 0 0 15px var(--cyan-dim);">
-                                <p style="color: var(--cyan); font-weight: 700; margin: 0;">Agent C</p>
-                                <p style="color: var(--text-muted); font-size: var(--small-size); margin: 0.3rem 0 0;">专业能力</p>
+                            <div style="background: var(--bg-card); border: 2px solid var(--yellow); border-radius: 8px; padding: 0.6rem 0.8rem; text-align: center; flex: 1; max-width: 120px; box-shadow: 0 0 15px rgba(255,200,0,0.2);">
+                                <p style="color: var(--yellow); font-weight: 700; margin: 0; font-size: var(--small-size);">👤 Agent C</p>
+                                <p style="color: var(--text-muted); font-size: 0.65rem; margin: 0.2rem 0 0;">内容捕手</p>
                             </div>
                         </div>
-                        <p style="text-align: center; color: var(--text-muted); font-size: var(--small-size);">+ Skills + Memory + Heartbeat</p>
-                        <div style="height: 1px; background: linear-gradient(90deg, transparent, var(--purple), transparent); margin: 1rem 0;"></div>
-                        <p style="text-align: center; color: var(--text-muted); font-size: var(--small-size); margin-bottom: 0.5rem;">底层：大模型 LLM</p>
-                        <div style="display: flex; justify-content: center; gap: 1rem;">
-                            <div style="background: var(--bg-card); border: 2px solid var(--purple); border-radius: 8px; padding: 0.8rem 1.5rem; text-align: center;">
-                                <p style="color: var(--purple); font-weight: 700; margin: 0;">MiniMax</p>
-                            </div>
-                            <div style="background: var(--bg-card); border: 2px solid var(--pink); border-radius: 8px; padding: 0.8rem 1.5rem; text-align: center;">
-                                <p style="color: var(--pink); font-weight: 700; margin: 0;">Claude</p>
+                        <p style="text-align: center; color: var(--pink); margin: 0.2rem 0;">⬇️ 调用能力</p>
+                        <!-- Bottom Layer: LLM -->
+                        <div style="background: linear-gradient(135deg, rgba(128,0,255,0.1), rgba(255,0,128,0.05)); border: 2px solid var(--purple); border-radius: 10px; padding: 0.8rem; text-align: center;">
+                            <p style="color: var(--purple); font-weight: 700; margin: 0;">🧠 大模型 LLM（底层能力）</p>
+                            <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 0.5rem;">
+                                <div style="background: rgba(128,0,255,0.2); border-radius: 6px; padding: 0.4rem 0.8rem;">
+                                    <p style="color: var(--purple); font-weight: 700; margin: 0; font-size: var(--small-size);">MiniMax</p>
+                                </div>
+                                <div style="background: rgba(255,0,128,0.2); border-radius: 6px; padding: 0.4rem 0.8rem;">
+                                    <p style="color: var(--pink); font-weight: 700; margin: 0; font-size: var(--small-size);">Claude</p>
+                                </div>
+                                <div style="background: rgba(0,255,255,0.2); border-radius: 6px; padding: 0.4rem 0.8rem;">
+                                    <p style="color: var(--cyan); font-weight: 700; margin: 0; font-size: var(--small-size);">GPT</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRANSITION: CORE FEATURES -->
+    <section class="slide" id="slide-transition-3">
+        <div class="grid-bg"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="orb orb-pink"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label" style="font-size: var(--h2-size);">03</p>
+                <h1 class="reveal" style="font-size: clamp(2rem, 6vw, 4rem);">核心功能</h1>
+                <p class="reveal subtitle">Heartbeat、Memory、Multi-Agent</p>
             </div>
         </div>
     </section>
@@ -783,30 +928,38 @@
         <div class="slide-content">
             <div class="content-wrapper">
                 <p class="reveal section-label">03 / CORE FEATURES</p>
-                <h2 class="reveal"><span class="num">01</span>心跳机制 HEARTBEAT</h2>
+                <h2 class="reveal"><span class="num">01</span>定时任务 & 心跳机制</h2>
                 <div class="reveal">
-                    <div class="card highlight">
-                        <h3>💓 什么是心跳？</h3>
-                        <p>OpenClaw 的<span style="color: var(--pink);">定时任务触发器</span>，让它可以<span style="color: var(--cyan);">主动</span>执行任务。</p>
-                    </div>
+                    <p style="margin-bottom: 1rem;">两者都像"闹钟"，让 AI 助手自动干活，但逻辑完全不同：</p>
                 </div>
                 <div class="reveal" style="margin-top: 0.6rem;">
-                    <h3>⏰ 工作流程</h3>
-                    <div class="card">
-                        <ol style="margin: 0;">
-                            <li><span style="color: var(--cyan);">配置心跳</span>：设定执行间隔（如每天9点）</li>
-                            <li><span style="color: var(--cyan);">触发执行</span>：到达时间自动执行</li>
-                            <li><span style="color: var(--cyan);">执行动作</span>：获取新闻、监控股票等</li>
-                            <li><span style="color: var(--cyan);">汇报结果</span>：通过飞书推送</li>
-                        </ol>
+                    <div class="two-col">
+                        <div class="card highlight">
+                            <h3>⏱️ 定时任务 (Cron)</h3>
+                            <p style="color: var(--text-muted); font-size: var(--small-size);">精准的"执行机器"</p>
+                            <ul style="margin: 0.5rem 0 0; font-size: var(--small-size);">
+                                <li><strong>触发</strong>：精准时间点/间隔</li>
+                                <li><strong>特点</strong>：独立运行，无记忆</li>
+                                <li><strong>打扰</strong>：到点就执行</li>
+                                <li><strong>用途</strong>：定点发报、定时备份</li>
+                            </ul>
+                        </div>
+                        <div class="card purple">
+                            <h3>💓 心跳机制 (Heartbeat)</h3>
+                            <p style="color: var(--text-muted); font-size: var(--small-size);">会"思考"的"巡视员"</p>
+                            <ul style="margin: 0.5rem 0 0; font-size: var(--small-size);">
+                                <li><strong>触发</strong>：定期巡查，判断时机</li>
+                                <li><strong>特点</strong>：带记忆，感知上下文</li>
+                                <li><strong>打扰</strong>：有事才通知</li>
+                                <li><strong>用途</strong>：持续监控、批量提醒</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-                <div class="reveal" style="margin-top: 0.6rem;">
-                    <h3>📋 我的配置</h3>
-                    <div class="card-grid" style="grid-template-columns: repeat(3, 1fr);">
-                        <div class="card"><h3>09:00</h3><p>每日汇总</p></div>
-                        <div class="card"><h3>09:00</h3><p>新闻播报</p></div>
-                        <div class="card"><h3>每30分钟</h3><p>量化监控</p></div>
+                <div class="reveal" style="margin-top: 0.8rem;">
+                    <div class="card" style="border-left: 3px solid var(--cyan);">
+                        <h3>🤔 如何选择？</h3>
+                        <p style="margin: 0;">需要准点执行？→ <span style="color: var(--cyan);">Cron</span> &nbsp;|&nbsp; 需要批量检查？→ <span style="color: var(--pink);">Heartbeat</span> &nbsp;|&nbsp; 追求极致效率？→ <span style="color: var(--green);">两者结合</span></p>
                     </div>
                 </div>
             </div>
@@ -865,7 +1018,7 @@
                 <p class="reveal section-label">03 / CORE FEATURES</p>
                 <h2 class="reveal"><span class="num">03</span>多 Agents 协作</h2>
                 <div class="reveal">
-                    <p>通过 <a href="https://github.com/msitarzewski/agency-agents" target="_blank">agency-agents</a> 可以调用 100+ 专业 Agents 协同工作。</p>
+                    <p>通过 GitHub 项目 <a href="https://github.com/msitarzewski/agency-agents" target="_blank">agency-agents</a> 可以调用 100+ 专业 Agents 协同工作。</p>
                 </div>
                 <div class="reveal" style="margin-top: 0.6rem;">
                     <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
@@ -886,6 +1039,22 @@
 4. Editor Agent → 检查语法、优化标题
 5. 最终输出 → 整合成完整文章</pre>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRANSITION: MY SETUP -->
+    <section class="slide" id="slide-transition-4">
+        <div class="grid-bg"></div>
+        <div class="orb orb-pink"></div>
+        <div class="orb orb-green"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label" style="font-size: var(--h2-size);">04</p>
+                <h1 class="reveal" style="font-size: clamp(2rem, 6vw, 4rem);">我的部署</h1>
+                <p class="reveal subtitle">Mac Mini + MiniMax + 飞书</p>
             </div>
         </div>
     </section>
@@ -912,7 +1081,8 @@
                 </div>
                 <div class="reveal" style="margin-top: 0.6rem;">
                     <h3>⚡ 为什么选 Mac Mini？（可选方案）</h3>
-                    <div class="card-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="card"><h3>🖥️ 自由</h3><p>完全独立使用</p></div>
                         <div class="card"><h3>💰 性价比</h3><p>3000+元</p></div>
                         <div class="card"><h3>🔇 静音</h3><p>7×24不吵</p></div>
                         <div class="card"><h3>⚡ 省电</h3><p>&lt;1度/天</p></div>
@@ -946,10 +1116,11 @@
                 </div>
                 <div class="reveal" style="margin-top: 0.6rem;">
                     <h3>💡 选择理由</h3>
-                    <div class="card-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
                         <div class="card"><h3>🌏 国内快</h3><p>无需翻墙</p></div>
                         <div class="card"><h3>💵 便宜</h3><p>性价比高</p></div>
                         <div class="card"><h3>💻 Coding</h3><p>2.5提升明显</p></div>
+                        <div class="card"><h3>✅ 可用</h3><p>执行上没问题</p></div>
                     </div>
                 </div>
                 <div class="reveal" style="margin-top: 0.6rem;">
@@ -976,11 +1147,16 @@
                 <p class="reveal section-label">04 / MY SETUP</p>
                 <h2 class="reveal"><span class="num">03</span>为什么用飞书？</h2>
                 <div class="reveal">
+                    <h3>📡 OpenClaw 支持的 Channel</h3>
+                    <p style="margin-bottom: 0.6rem;">飞书、Telegram、微信、Slack、Discord、命令行等</p>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <h3>💡 为什么选飞书？</h3>
                     <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
                         <div class="card"><h3>📱 移动端</h3><p>随时指挥</p></div>
                         <div class="card"><h3>🔔 推送</h3><p>定时通知</p></div>
                         <div class="card"><h3>📊 文档</h3><p>数据存储</p></div>
-                        <div class="card"><h3>🤖 Bot</h3><p>消息/图片</p></div>
+                        <div class="card"><h3>🎨 卡片</h3><p>信息展示美观</p></div>
                     </div>
                 </div>
                 <div class="reveal" style="margin-top: 0.6rem;">
@@ -992,6 +1168,22 @@
                         </ul>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRANSITION: CORE CONFIG -->
+    <section class="slide" id="slide-transition-5">
+        <div class="grid-bg"></div>
+        <div class="orb orb-purple"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label" style="font-size: var(--h2-size);">05</p>
+                <h1 class="reveal" style="font-size: clamp(2rem, 6vw, 4rem);">核心配置</h1>
+                <p class="reveal subtitle">Identity、Soul、Memory、Tools</p>
             </div>
         </div>
     </section>
@@ -1009,17 +1201,18 @@
                 <h2 class="reveal"><span class="num">01</span>玩转 OPENCLAW 的关键</h2>
                 <div class="reveal"><p>玩转 OpenClaw，就是玩转这些核心配置文件：</p></div>
                 <div class="reveal">
-                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
-                        <div class="card"><h3>📝 IDENTITY</h3><p>定义角色</p></div>
-                        <div class="card highlight"><h3>💫 SOUL</h3><p>对话风格</p></div>
-                        <div class="card purple"><h3>🧠 MEMORY</h3><p>长期记忆</p></div>
-                        <div class="card yellow"><h3>⏰ HEARTBEAT</h3><p>定时任务</p></div>
+                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr); gap: 0.6rem;">
+                        <div class="card" style="padding: 0.8rem;"><h3>📝 IDENTITY</h3><p style="font-size: var(--small-size);">定义角色</p></div>
+                        <div class="card highlight" style="padding: 0.8rem;"><h3>💫 SOUL</h3><p style="font-size: var(--small-size);">对话风格</p></div>
+                        <div class="card purple" style="padding: 0.8rem;"><h3>👤 user</h3><p style="font-size: var(--small-size);">使用者身份</p></div>
+                        <div class="card" style="padding: 0.8rem;"><h3>📒 memory</h3><p style="font-size: var(--small-size);">长期记忆</p></div>
                     </div>
                 </div>
-                <div class="reveal" style="margin-top: 0.6rem;">
-                    <div class="card">
-                        <h3>🔧 TOOLS 配置</h3>
-                        <p>让 OpenClaw 按照固定流程执行（如记账到飞书文档），写到配置里而不是靠记忆。</p>
+                <div class="reveal" style="margin-top: 0.4rem;">
+                    <div class="card-grid" style="grid-template-columns: repeat(3, 1fr); gap: 0.6rem;">
+                        <div class="card yellow" style="padding: 0.8rem;"><h3>⏰ HEARTBEAT</h3><p style="font-size: var(--small-size);">定时任务</p></div>
+                        <div class="card" style="padding: 0.8rem;"><h3>🤖 AGENTS</h3><p style="font-size: var(--small-size);">工作规范</p></div>
+                        <div class="card highlight" style="padding: 0.8rem;"><h3>🔧 TOOLS</h3><p style="font-size: var(--small-size);">执行工具</p></div>
                     </div>
                 </div>
             </div>
@@ -1079,6 +1272,50 @@
         </div>
     </section>
 
+    <!-- SLIDE 12B: Memory Config -->
+    <section class="slide" id="slide-12b">
+        <div class="grid-bg"></div>
+        <div class="orb orb-purple"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">05 / CORE CONFIG</p>
+                <h2 class="reveal"><span class="num">03</span>配置示例：memory（长期记忆）</h2>
+                <div class="reveal">
+                    <div class="quote" style="border-left-color: var(--purple); margin-bottom: 1rem;">
+                        <code>memory/</code> 文件夹存放长期记忆，会在每次对话时注入上下文，让 OpenClaw 记住"你应该知道什么"。
+                    </div>
+                </div>
+                <div class="reveal">
+                    <h3>📒 memory/ 目录结构</h3>
+                    <pre style="margin: 0;">memory/
+├── 人物库.md         # 重要人物关系
+├── 知识库.md         # 专业知识积累
+├── 偏好库.md         # 使用者偏好习惯
+└── 技能库.md         # 已掌握技能记录</pre>
+                </div>
+                <div class="reveal" style="margin-top: 0.8rem;">
+                    <h3>📝 长期记忆示例：人物库.md</h3>
+                    <pre style="margin: 0;"># 人物库
+
+## 家人
+- 妈妈：喜欢养生，关注健康类内容
+- 爸爸：关心时事，每天需要新闻播报
+
+## 重要联系人
+- 张三（同事）：项目A负责人，周二定期沟通
+- 李四（投资人）：每月汇报项目进展
+
+## 偏好记忆
+- 与家人沟通时使用简洁温和的语言
+- 重要事项单独@确认，不要群发</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- SLIDE 13: Tools Config -->
     <section class="slide" id="slide-13">
         <div class="grid-bg"></div>
@@ -1088,7 +1325,7 @@
         <div class="slide-content">
             <div class="content-wrapper">
                 <p class="reveal section-label">05 / CORE CONFIG</p>
-                <h2 class="reveal"><span class="num">03</span>配置示例：TOOLS（记账场景）</h2>
+                <h2 class="reveal"><span class="num">04</span>配置示例：TOOLS（记账场景）</h2>
                 <div class="reveal">
                     <div class="card highlight">
                         <h3>🔧 为什么要写进 Tools？</h3>
@@ -1119,6 +1356,22 @@
         </div>
     </section>
 
+    <!-- TRANSITION: PITFALLS -->
+    <section class="slide" id="slide-transition-6">
+        <div class="grid-bg"></div>
+        <div class="orb orb-purple"></div>
+        <div class="orb orb-pink"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label" style="font-size: var(--h2-size);">06</p>
+                <h1 class="reveal" style="font-size: clamp(2rem, 6vw, 4rem);">常见坑与经验</h1>
+                <p class="reveal subtitle">方法论与避坑指南</p>
+            </div>
+        </div>
+    </section>
+
     <!-- SLIDE 14: Methodology -->
     <section class="slide" id="slide-14">
         <div class="grid-bg"></div>
@@ -1133,11 +1386,22 @@
                     <div class="quote">培养 OpenClaw 的本质：<span style="color: var(--cyan);">不是下命令，而是建立机制</span>。</div>
                 </div>
                 <div class="reveal" style="margin-top: 0.8rem;">
+                    <div class="card" style="border-color: var(--pink);">
+                        <h3 style="color: var(--pink);">🌟 原则零：别把他当工具，把他当人（们）</h3>
+                        <ul style="margin: 0;">
+                            <li><strong>说人话</strong>：让他读、让他思考、让他努力、让他写、让他说他的理解并跟你对齐</li>
+                            <li><strong>说到他心里去</strong>：了解他的底层机制<br>
+                            ❌ "你记住了吧"<br>
+                            ✅ "你写到自己的记忆里了吗，给我展示一下现在的结构和内容"</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.5rem;">
                     <div class="card">
                         <h3>🛡️ 原则一：不要让模型改核心配置</h3>
                         <ul style="margin: 0;">
                             <li><strong>危险操作</strong>：通过对话让模型修改 <code>openclaw.json</code></li>
-                            <li><strong>原则</strong>：核心配置要<span style="color: var(--cyan);">手动修改</span></li>
+                            <li><strong>原则</strong>：核心配置通过 <a href="https://docs.openclaw.ai/cli" target="_blank" style="color: var(--cyan);">openclaw 命令</a> 修改，进阶可手动修改配置文件</li>
                         </ul>
                     </div>
                 </div>
@@ -1145,17 +1409,17 @@
                     <div class="card green">
                         <h3>💾 原则二：定时备份核心文件</h3>
                         <ul style="margin: 0;">
-                            <li><strong>需要备份</strong>：<code>openclaw.json</code>、<code>memory/</code>、<code>identity</code>、<code>soul</code></li>
+                            <li><strong>需要备份</strong>：<code>openclaw.json</code>、<code>memory</code>、<code>identity</code>、<code>soul</code></li>
                             <li><strong>建议</strong>：配置心跳任务，让它自己定期备份</li>
                         </ul>
                     </div>
                 </div>
                 <div class="reveal" style="margin-top: 0.5rem;">
                     <div class="card purple">
-                        <h3>📝 原则三：写到配置里，不要靠记忆</h3>
+                        <h3>📝 原则三：不要相信口头，要写入配置并定期检查</h3>
                         <ul style="margin: 0;">
-                            <li><strong>问题</strong>：让它"记住"记账位置，下次又忘了</li>
-                            <li><strong>解决</strong>：写到 <code>tools</code> 配置里</li>
+                            <li><strong>问题</strong>：让它口头"记住"记账位置，下次又忘了</li>
+                            <li><strong>解决</strong>：写到 <code>tools</code> 配置里，并定期检查配置是否生效</li>
                         </ul>
                     </div>
                 </div>
@@ -1175,15 +1439,57 @@
                 <p class="reveal section-label">06 / PITFALLS</p>
                 <h2 class="reveal"><span class="num">02</span>常见坑与解决方案</h2>
                 <div class="reveal">
-                    <table class="compare-table">
-                        <tr><th>问题</th><th>原因</th><th>解决方案</th></tr>
-                        <tr><td>无法拉群</td><td>个人版飞书</td><td style="color: var(--cyan);">用企业版飞书</td></tr>
-                        <tr><td>定时任务失效</td><td>复杂任务超出能力</td><td style="color: var(--cyan);">简化任务</td></tr>
-                        <tr><td>图片理解缺失</td><td>默认无此能力</td><td style="color: var(--cyan);">安装 skill</td></tr>
-                        <tr><td>群聊没有记忆</td><td>默认只记私聊</td><td style="color: var(--cyan);">建独立记忆文件</td></tr>
-                        <tr><td>教过的问题不记得</td><td>对话中说过就忘</td><td style="color: var(--cyan);">写成文档保存</td></tr>
-                    </table>
+                    <div class="card-grid" style="grid-template-columns: repeat(2, 1fr);">
+                        <div class="card">
+                            <h3>🚫 飞书相关</h3>
+                            <ul style="margin: 0; font-size: var(--small-size);">
+                                <li><strong>无法拉群</strong> → 用企业版飞书</li>
+                                <li><strong>机器人无响应</strong> → 检查权限：im:message, im:resource, im:chat</li>
+                                <li><strong>消息发不出去</strong> → 确认应用已开通对应群聊权限</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3>⏰ 定时任务</h3>
+                            <ul style="margin: 0; font-size: var(--small-size);">
+                                <li><strong>任务不执行</strong> → 简化任务，一次只做一件事</li>
+                                <li><strong>执行结果不对</strong> → 检查 HEARTBEAT.md 格式是否正确</li>
+                                <li><strong>间隔太短</strong> → 建议 cron 间隔不少于 5 分钟</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3>🧠 记忆问题</h3>
+                            <ul style="margin: 0; font-size: var(--small-size);">
+                                <li><strong>群聊没记忆</strong> → 在 memory/ 下建群聊专属文件</li>
+                                <li><strong>教过又忘了</strong> → 写入配置文件，不要只靠对话</li>
+                                <li><strong>记忆文件太大</strong> → 定期整理，精简内容</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3>🔧 能力缺失</h3>
+                            <ul style="margin: 0; font-size: var(--small-size);">
+                                <li><strong>无法理解图片</strong> → 安装 minimax-understand-image skill</li>
+                                <li><strong>无法搜索</strong> → 安装 last30days-lite skill</li>
+                                <li><strong>能力不够用</strong> → 去 ClawHub 安装更多 skills</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRANSITION: LEARNING -->
+    <section class="slide" id="slide-transition-7">
+        <div class="grid-bg"></div>
+        <div class="orb orb-pink"></div>
+        <div class="orb orb-yellow"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label" style="font-size: var(--h2-size);">07</p>
+                <h1 class="reveal" style="font-size: clamp(2rem, 6vw, 4rem);">技能市场</h1>
+                <p class="reveal subtitle">ClawHub 与 Skills 生态</p>
             </div>
         </div>
     </section>
@@ -1199,17 +1505,44 @@
                 <p class="reveal section-label">07 / LEARNING</p>
                 <h2 class="reveal"><span class="num">01</span>入门学习路径</h2>
                 <div class="reveal">
-                    <h3>🪜 推荐步骤</h3>
-                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
-                        <div class="card"><span class="step">1</span><h3>环境搭建</h3><p>Homebrew<br>git/node/python<br>Claude Code</p></div>
-                        <div class="card"><span class="step">2</span><h3>配置模型</h3><p>注册 MiniMax<br>获取 API Key</p></div>
-                        <div class="card"><span class="step">3</span><h3>飞书集成</h3><p>创建应用<br>配置权限</p></div>
-                        <div class="card"><span class="step">4</span><h3>运行调试</h3><p>启动<br>测试<br>配置定时任务</p></div>
+                    <p>强烈推荐：<a href="https://github.com/xianyu110/awesome-openclaw-tutorial" target="_blank" style="color: var(--cyan);">awesome-openclaw-tutorial</a>（2.4k ⭐ | 15章 | 70+实战案例）</p>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <h3>🪜 推荐学习步骤</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="card">
+                            <h3>🎯 第一阶段：入门</h3>
+                            <ul style="margin: 0; font-size: var(--small-size);">
+                                <li>了解 OpenClaw 是什么</li>
+                                <li>5分钟完成部署</li>
+                                <li>发送第一条消息</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3>🚀 第二阶段：核心功能</h3>
+                            <ul style="margin: 0; font-size: var(--small-size);">
+                                <li>本地文件管理</li>
+                                <li>个人知识库</li>
+                                <li>日程管理</li>
+                                <li>自动化工作流</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3>💎 第三阶段：进阶</h3>
+                            <ul style="margin: 0; font-size: var(--small-size);">
+                                <li>Skills 扩展</li>
+                                <li>多平台集成</li>
+                                <li>API 服务集成</li>
+                                <li>高级配置</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="reveal" style="margin-top: 0.6rem;">
-                    <h3>📚 推荐资源</h3>
-                    <p><a href="https://github.com/anthropics/claude-code" target="_blank">Claude Code</a> · <a href="https://console.minimax.io" target="_blank">MiniMax Console</a> · <a href="https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot" target="_blank">飞书机器人</a></p>
+                    <h3>💡 小窍门</h3>
+                    <div class="card highlight">
+                        <p>让 OpenClaw 读一下这个项目链接，让它把这个教程转化成你的闯关小游戏！</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1226,21 +1559,67 @@
                 <p class="reveal section-label">07 / LEARNING</p>
                 <h2 class="reveal"><span class="num">02</span>推荐 SKILLS</h2>
                 <div class="reveal">
-                    <h3>🧠 自我学习类（强烈推荐）</h3>
+                    <h3>🚀 主动执行 & 自我提升</h3>
                     <div class="card-grid" style="grid-template-columns: repeat(2, 1fr);">
-                        <div class="card highlight"><h3>self-learning</h3><p>自动学习对话内容并更新记忆</p></div>
-                        <div class="card highlight"><h3>memory-manager</h3><p>自动整理和优化记忆文件</p></div>
+                        <div class="card highlight"><h3>🤖 Proactive Agent</h3><p>主动规划执行任务</p></div>
+                        <div class="card highlight"><h3>🧠 self-improving-agent</h3><p>自动学习和改进</p></div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.5rem;">
+                    <h3>🔍 搜索发现 & 生活</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="card"><h3>🔎 Find Skills</h3><p>查找 Skills</p></div>
+                        <div class="card"><h3>🌐 Multi Search</h3><p>多搜索引擎</p></div>
+                        <div class="card"><h3>📅 last30days</h3><p>搜索近期内容</p></div>
+                        <div class="card"><h3>🌤️ Weather</h3><p>天气播报</p></div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.5rem;">
+                    <h3>🛠️ 开发者工具 & 内容处理</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="card"><h3>🐙 Github</h3><p>GitHub 集成</p></div>
+                        <div class="card"><h3>📝 Summarize</h3><p>内容总结</p></div>
+                        <div class="card"><h3>🎙️ Whisper</h3><p>语音转文字</p></div>
+                        <div class="card"><h3>🖼️ 图片理解</h3><p>minimax-understand-image</p></div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.5rem;">
+                    <h3>🔗 工具集成</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="card"><h3>📓 Notion</h3><p>Notion 集成</p></div>
+                        <div class="card"><h3>🌐 API Gateway</h3><p>API 网关</p></div>
+                        <div class="card"><h3>✅ Skill Vetter</h3><p>技能审核</p></div>
                     </div>
                 </div>
                 <div class="reveal" style="margin-top: 0.6rem;">
-                    <h3>🔌 必备 Skills</h3>
-                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
-                        <div class="card"><h3>🖼️ 图片理解</h3><p>minimax-understand-image</p></div>
-                        <div class="card"><h3>🔍 搜索</h3><p>last30days-lite</p></div>
-                        <div class="card"><h3>📊 深度回答</h3><p>answeroverflow</p></div>
-                        <div class="card"><h3>🌤️ 天气</h3><p>天气播报</p></div>
+                    <h3>⚙️ 如何安装？</h3>
+                    <div class="card" style="border-left: 3px solid var(--cyan);">
+                        <pre style="margin: 0; font-size: var(--small-size);"># 方式1：ClawHub 安装
+openclaw tools add [skill名称]
+
+# 方式2：GitHub 安装
+openclaw tools add --github [repo-url]
+
+# 方式3：本地安装
+openclaw tools add --local [本地路径]</pre>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRANSITION: PRACTICE -->
+    <section class="slide" id="slide-transition-8">
+        <div class="grid-bg"></div>
+        <div class="orb orb-green"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label" style="font-size: var(--h2-size);">08</p>
+                <h1 class="reveal" style="font-size: clamp(2rem, 6vw, 4rem);">实战案例</h1>
+                <p class="reveal subtitle">记账、盯盘、内容捕手</p>
             </div>
         </div>
     </section>
@@ -1416,17 +1795,32 @@ openclaw cron add --name "盘中监控" --cron "*/30 * * * *" --session isolated
                 <p class="reveal section-label">08 / PRACTICE</p>
                 <h2 class="reveal"><span class="num">05</span>更多应用场景</h2>
                 <div class="reveal">
-                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
-                        <div class="card"><h3>📋 飞书任务追踪</h3><p>多维表格+心跳</p></div>
-                        <div class="card"><h3>📝 文档自动化</h3><p>自动汇总</p></div>
-                        <div class="card"><h3>🖥️ 开发辅助</h3><p>Bug分析</p></div>
-                        <div class="card"><h3>🏠 生活助手</h3><p>天气提醒</p></div>
+                    <p>参考：<a href="https://github.com/hesamsheikh/awesome-openclaw-usecases" target="_blank" style="color: var(--cyan);">awesome-openclaw-usecases</a></p>
+                </div>
+                <div class="reveal" style="margin-top: 0.5rem;">
+                    <h3>📱 社交媒体</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="card"><h3>📰 Reddit 摘要</h3><p>按偏好汇总 subreddit</p></div>
+                        <div class="card"><h3>📺 YouTube 摘要</h3><p>每日新视频摘要</p></div>
+                        <div class="card"><h3>📊 X/Twitter 分析</h3><p>账户定性分析</p></div>
                     </div>
                 </div>
-                <div class="reveal" style="margin-top: 0.6rem;">
-                    <div class="card purple">
-                        <h3>🔮 更多可能</h3>
-                        <p>家庭助理 · 个人教练 · 客服机器人 · 取决于你的想象力！</p>
+                <div class="reveal" style="margin-top: 0.5rem;">
+                    <h3>💼 生产力</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="card"><h3>📋 项目管理</h3><p>多代理协调</p></div>
+                        <div class="card"><h3>📞 电话助理</h3><p>语音访问AI</p></div>
+                        <div class="card"><h3>👥 个人 CRM</h3><p>自动跟踪联系人</p></div>
+                        <div class="card"><h3>📅 家庭日历</h3><p>早间简报</p></div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.5rem;">
+                    <h3>💰 金融 & 创意</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="card"><h3>📈 财报追踪</h3><p>AI/科技财报</p></div>
+                        <div class="card"><h3>🎮 游戏开发</h3><p>全流程管理</p></div>
+                        <div class="card"><h3>🎙️ 播客制作</h3><p>自动化流程</p></div>
+                        <div class="card"><h3>🧠 第二大脑</h3><p>记忆+搜索</p></div>
                     </div>
                 </div>
             </div>
@@ -1444,20 +1838,46 @@ openclaw cron add --name "盘中监控" --cron "*/30 * * * *" --session isolated
             <div class="content-wrapper title-content">
                 <p class="reveal section-label">09 / SUMMARY</p>
                 <h2 class="reveal" style="font-size: clamp(1.8rem, 4vw, 2.5rem);">🚀 现在就可以开始</h2>
-                <div class="reveal" style="margin-top: 2rem; text-align: left; max-width: 500px; margin-left: auto; margin-right: auto;">
-                    <div class="card" style="margin-bottom: 0.8rem;">
-                        <p style="font-size: var(--h3-size); margin: 0;"><span style="color: var(--cyan);">☐</span> Step 1：克隆仓库，按文档完成环境搭建（预计 30 分钟）</p>
+                <div class="reveal" style="margin-top: 2rem; text-align: left; max-width: 650px; margin-left: auto; margin-right: auto;">
+                    <div class="card" style="margin-bottom: 0.6rem;">
+                        <p style="font-size: var(--body-size); margin: 0;"><span style="color: var(--cyan);">☐</span> <strong>Step 1：部署 OpenClaw</strong></p>
+                        <p style="font-size: var(--small-size); color: var(--text-muted); margin: 0.3rem 0 0;">使用 Kim/腾讯/Minimax 一键部署，或访问 <span style="color: var(--cyan);">openclaw.ai</span> 寻找部署方法</p>
                     </div>
-                    <div class="card" style="margin-bottom: 0.8rem;">
-                        <p style="font-size: var(--h3-size); margin: 0;"><span style="color: var(--pink);">☐</span> Step 2：配置你的第一个 Identity 文件，定义你的 AI 助手角色</p>
+                    <div class="card" style="margin-bottom: 0.6rem;">
+                        <p style="font-size: var(--body-size); margin: 0;"><span style="color: var(--pink);">☐</span> <strong>Step 2：与你的龙虾对话</strong></p>
+                        <p style="font-size: var(--small-size); color: var(--text-muted); margin: 0.3rem 0 0;">让他了解你是谁、他自己是谁，问问他核心的配置文件有哪些</p>
+                    </div>
+                    <div class="card" style="margin-bottom: 0.6rem;">
+                        <p style="font-size: var(--body-size); margin: 0;"><span style="color: var(--purple);">☐</span> <strong>Step 3：安装推荐的 Skills</strong></p>
+                        <p style="font-size: var(--small-size); color: var(--text-muted); margin: 0.3rem 0 0;">Proactive Agent、self-improving-agent、Weather、Notion 等</p>
                     </div>
                     <div class="card">
-                        <p style="font-size: var(--h3-size); margin: 0;"><span style="color: var(--green);">☐</span> Step 3：设置一个心跳任务，让它明天早上9点给你发一条消息</p>
+                        <p style="font-size: var(--body-size); margin: 0;"><span style="color: var(--green);">☐</span> <strong>Step 4：设定定时任务</strong></p>
+                        <p style="font-size: var(--small-size); color: var(--text-muted); margin: 0.3rem 0 0;">让它每天早上9点给你发送每日新闻</p>
                     </div>
                 </div>
                 <div class="reveal" style="margin-top: 2rem;">
                     <p style="color: var(--text-muted); font-size: var(--small-size);">越早开始配置，它就越早了解你</p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRANSITION: SUMMARY -->
+    <section class="slide" id="slide-transition-9">
+        <div class="grid-bg"></div>
+        <div class="orb orb-green"></div>
+        <div class="orb orb-pink"></div>
+        <div class="orb orb-purple"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label" style="font-size: var(--h2-size);">09</p>
+                <h1 class="reveal" style="font-size: clamp(2rem, 6vw, 4rem);">总结与展望</h1>
+                <p class="reveal subtitle">当前进度与未来意义</p>
             </div>
         </div>
     </section>
@@ -1482,24 +1902,92 @@ openclaw cron add --name "盘中监控" --cron "*/30 * * * *" --session isolated
                                 <li>飞书集成</li>
                                 <li>定时任务</li>
                                 <li>记账</li>
-                                <li>量化</li>
+                                <li>智能盯盘</li>
+                                <li>自动化小红书</li>
                             </ul>
                         </div>
                         <div class="card highlight">
                             <h3>🔄 进行中</h3>
                             <ul style="margin: 0.5rem 0 0;">
-                                <li>小红书自动化</li>
                                 <li>多Agents协作</li>
                                 <li>内容捕手优化</li>
+                                <li>量化</li>
+                                <li>知识管理</li>
                             </ul>
                         </div>
                         <div class="card purple">
                             <h3>⏳ 待探索</h3>
                             <ul style="margin: 0.5rem 0 0;">
-                                <li>浏览器自动化</li>
-                                <li>跨平台整合</li>
-                                <li>更多场景</li>
+                                <li>以项目为核心</li>
+                                <li>让多Agents为我打工</li>
                             </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 23B: Screenshots -->
+    <section class="slide" id="slide-23b">
+        <div class="grid-bg"></div>
+        <div class="orb orb-green"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">09 / SUMMARY</p>
+                <h2 class="reveal"><span class="num">02</span>落地截图</h2>
+                <p class="reveal" style="color: var(--text-muted); margin-bottom: 0.3rem;">8个已落地的应用场景</p>
+                <!-- Screenshot Carousel -->
+                <div class="reveal" style="margin-top: 0.8rem;">
+                    <div class="carousel">
+                        <button class="carousel-arrow prev" onclick="moveCarousel(-1)">&#8249;</button>
+                        <button class="carousel-arrow next" onclick="moveCarousel(1)">&#8250;</button>
+                        <div class="carousel-track">
+                            <div class="carousel-slide">
+                                <img src=".claude-design/slide-images/01-feishu-weather.png" alt="新闻播报">
+                                <div class="carousel-caption">📰 新闻播报</div>
+                            </div>
+                            <div class="carousel-slide">
+                                <img src=".claude-design/slide-images/02-openclaw-cli.png" alt="天气预报">
+                                <div class="carousel-caption">🌤️ 天气预报</div>
+                            </div>
+                            <div class="carousel-slide">
+                                <img src=".claude-design/slide-images/03-directory-structure.png" alt="智能盯盘">
+                                <div class="carousel-caption">📈 智能盯盘</div>
+                            </div>
+                            <div class="carousel-slide">
+                                <img src=".claude-design/slide-images/04-running-status.png" alt="记账">
+                                <div class="carousel-caption">💰 记账</div>
+                            </div>
+                            <div class="carousel-slide">
+                                <img src=".claude-design/slide-images/05-notion.png" alt="内容捕手">
+                                <div class="carousel-caption">🎯 内容捕手</div>
+                            </div>
+                            <div class="carousel-slide">
+                                <img src=".claude-design/slide-images/06-feishu-chat.png" alt="知识积累">
+                                <div class="carousel-caption">📚 知识积累</div>
+                            </div>
+                            <div class="carousel-slide">
+                                <img src=".claude-design/slide-images/07-cron-heartbeat.png" alt="职责规划">
+                                <div class="carousel-caption">📋 职责规划</div>
+                            </div>
+                            <div class="carousel-slide">
+                                <img src=".claude-design/slide-images/08-github.png" alt="培养记录">
+                                <div class="carousel-caption">🌱 培养记录</div>
+                            </div>
+                        </div>
+                        <div class="carousel-nav">
+                            <button class="carousel-dot active" onclick="goToCarouselSlide(0)"></button>
+                            <button class="carousel-dot" onclick="goToCarouselSlide(1)"></button>
+                            <button class="carousel-dot" onclick="goToCarouselSlide(2)"></button>
+                            <button class="carousel-dot" onclick="goToCarouselSlide(3)"></button>
+                            <button class="carousel-dot" onclick="goToCarouselSlide(4)"></button>
+                            <button class="carousel-dot" onclick="goToCarouselSlide(5)"></button>
+                            <button class="carousel-dot" onclick="goToCarouselSlide(6)"></button>
+                            <button class="carousel-dot" onclick="goToCarouselSlide(7)"></button>
                         </div>
                     </div>
                 </div>
@@ -1517,19 +2005,35 @@ openclaw cron add --name "盘中监控" --cron "*/30 * * * *" --session isolated
         <div class="slide-content">
             <div class="content-wrapper">
                 <p class="reveal section-label">09 / SUMMARY</p>
-                <h2 class="reveal"><span class="num">02</span>未来展望</h2>
+                <h2 class="reveal"><span class="num">03</span>未来展望</h2>
                 <div class="reveal">
-                    <h3>🎯 OpenClaw 与大模型发展</h3>
-                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
-                        <div class="card"><h3>🖼️ 多模态</h3><p>图像/视频/音频</p></div>
-                        <div class="card"><h3>🖱️ 系统控制</h3><p>操作浏览器</p></div>
-                        <div class="card"><h3>🧠 长期记忆</h3><p>跨会话学习</p></div>
-                        <div class="card"><h3>⚡ 自主决策</h3><p>主动规划</p></div>
+                    <h3>🚀 OpenClaw 对大模型发展的深远意义</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(2, 1fr); gap: 0.8rem;">
+                        <div class="card highlight">
+                            <h3>1️⃣ 范式转变</h3>
+                            <p>从"对话"到"执行"，AI 从问答升级为能自主完成复杂任务的"行动者"</p>
+                        </div>
+                        <div class="card purple">
+                            <h3>2️⃣ 评测重构</h3>
+                            <p>从知识储备转向执行能力，Agent 能力专项优化成为新方向</p>
+                        </div>
+                        <div class="card">
+                            <h3>3️⃣ 算力需求</h3>
+                            <p>高频调用 + 长上下文 = Token 消耗激增数十倍，拉动算力产业链</p>
+                        </div>
+                        <div class="card highlight">
+                            <h3>4️⃣ 国产机遇</h3>
+                            <p>MiniMax 极致性价比登顶调用榜，Kimi 出海表现亮眼</p>
+                        </div>
+                        <div class="card purple">
+                            <h3>5️⃣ 生态繁荣</h3>
+                            <p>云端部署服务、Skills 生态、Multi-Agent 协作</p>
+                        </div>
+                        <div class="card">
+                            <h3>📌 核心观点</h3>
+                            <p>OpenClaw 是催化剂，验证 Agentic AI 潜力，重塑 AI 产业演进方向</p>
+                        </div>
                     </div>
-                </div>
-                <div class="reveal" style="margin-top: 0.6rem;">
-                    <h3>🌐 垂直 Agents 发展</h3>
-                    <p>ClawHub 上有越来越多专业的 Agents，未来可以实现更复杂的自动化任务。</p>
                 </div>
             </div>
         </div>
@@ -1548,13 +2052,15 @@ openclaw cron add --name "盘中监控" --cron "*/30 * * * *" --session isolated
         <div class="slide-content">
             <div class="content-wrapper title-content">
                 <p class="reveal section-label">09 / SUMMARY</p>
-                <h2 class="reveal" style="font-size: clamp(1.5rem, 4vw, 3rem);">03 总结</h2>
+                <h2 class="reveal" style="font-size: clamp(1.5rem, 4vw, 3rem);">04 总结</h2>
                 <div class="reveal" style="margin-top: 1.5rem;">
-                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr); max-width: 800px; margin: 0 auto;">
+                    <div class="card-grid" style="grid-template-columns: repeat(3, 1fr); max-width: 800px; margin: 0 auto; gap: 1rem;">
                         <div class="card"><h3>🔧 核心配置</h3><p>Mac Mini<br>+ MiniMax<br>+ 飞书</p></div>
-                        <div class="card highlight"><h3>🧠 核心理念</h3><p>建立机制<br>而不是<br>下命令</p></div>
-                        <div class="card purple"><h3>📝 记忆方法</h3><p>写成文档<br>不只是<br>对话</p></div>
-                        <div class="card green"><h3>🔄 持续进化</h3><p>越用<br>越懂你</p></div>
+                        <div class="card highlight"><h3>🧠 核心理念</h3><p>原则零：把它<br>当人而不是<br>工具</p></div>
+                        <div class="card purple"><h3>📝 记忆方法</h3><p>写到配置里<br>定期检查<br>不要相信口头</p></div>
+                        <div class="card green"><h3>🚀 未来意义</h3><p>范式转变<br>评测重构<br>国产机遇</p></div>
+                        <div class="card"><h3>📈 当前进度</h3><p>新闻/天气/盯盘<br>记账/内容/知识<br>规划/培养</p></div>
+                        <div class="card highlight"><h3>🔄 持续进化</h3><p>越用<br>越懂你</p></div>
                     </div>
                 </div>
             </div>
@@ -1576,18 +2082,16 @@ openclaw cron add --name "盘中监控" --cron "*/30 * * * *" --session isolated
                 <div class="reveal" style="margin-top: 2rem;">
                     <div class="card-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 700px; margin: 0 auto; gap: 1rem;">
                         <div class="card" style="text-align: center;">
-                            <p style="font-size: var(--h3-size); margin-bottom: 0.5rem;">🌐 Claude Code</p>
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://github.com/anthropics/claude-code" style="border-radius: 8px; margin-bottom: 0.5rem;" alt="QR">
-                            <p style="font-size: var(--small-size); margin: 0;">OpenClaw 官方</p>
+                            <p style="font-size: var(--h3-size); margin-bottom: 0.5rem;">🌐 OpenClaw 官网</p>
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://openclaw.ai/" style="border-radius: 8px; margin-bottom: 0.5rem;" alt="QR">
                         </div>
                         <div class="card" style="text-align: center;">
-                            <p style="font-size: var(--h3-size); margin-bottom: 0.5rem;">🧠 agency-agents</p>
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://github.com/msitarzewski/agency-agents" style="border-radius: 8px; margin-bottom: 0.5rem;" alt="QR">
-                            <p style="font-size: var(--small-size); margin: 0;">多 Agents 协作</p>
+                            <p style="font-size: var(--h3-size); margin-bottom: 0.5rem;">🧠 Claude AI</p>
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://claude.ai/" style="border-radius: 8px; margin-bottom: 0.5rem;" alt="QR">
                         </div>
                         <div class="card" style="text-align: center;">
                             <p style="font-size: var(--h3-size); margin-bottom: 0.5rem;">📦 ClawHub</p>
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://claude.com/claude-code" style="border-radius: 8px; margin-bottom: 0.5rem;" alt="QR">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://github.com/openclaw/clawhub" style="border-radius: 8px; margin-bottom: 0.5rem;" alt="QR">
                             <p style="font-size: var(--small-size); margin: 0;">Skills marketplace</p>
                         </div>
                         <div class="card" style="text-align: center;">
@@ -1695,6 +2199,47 @@ openclaw cron add --name "盘中监控" --cron "*/30 * * * *" --session isolated
         }
     }
     new SlidePresentation();
+
+    // Carousel functions
+    let carouselIndex = 0;
+    const carouselSlides = document.querySelectorAll('.carousel-slide');
+    const carouselDots = document.querySelectorAll('.carousel-dot');
+    const carouselTrack = document.querySelector('.carousel-track');
+    let carouselInterval;
+
+    function goToCarouselSlide(index) {
+        if (index < 0) index = carouselSlides.length - 1;
+        if (index >= carouselSlides.length) index = 0;
+        carouselIndex = index;
+        carouselTrack.style.transform = `translateX(-${carouselIndex * 100}%)`;
+        carouselDots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === carouselIndex);
+        });
+    }
+
+    function moveCarousel(direction) {
+        goToCarouselSlide(carouselIndex + direction);
+    }
+
+    function startCarouselAutoPlay() {
+        carouselInterval = setInterval(() => {
+            moveCarousel(1);
+        }, 5000);
+    }
+
+    function stopCarouselAutoPlay() {
+        clearInterval(carouselInterval);
+    }
+
+    // Start auto-play
+    startCarouselAutoPlay();
+
+    // Pause on hover
+    const carouselContainer = document.querySelector('.carousel');
+    if (carouselContainer) {
+        carouselContainer.addEventListener('mouseenter', stopCarouselAutoPlay);
+        carouselContainer.addEventListener('mouseleave', startCarouselAutoPlay);
+    }
     </script>
 </body>
 </html>
