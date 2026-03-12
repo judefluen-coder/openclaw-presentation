@@ -586,6 +586,44 @@
         </div>
     </section>
 
+    <!-- SLIDE 1.5: Scene Introduction -->
+    <section class="slide" id="slide-1b">
+        <div class="grid-bg"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="orb orb-pink"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">01 / OPENING</p>
+                <h2 class="reveal">你是否有过这样的困扰？</h2>
+                <div class="reveal" style="margin-top: 1rem;">
+                    <div class="card-grid" style="grid-template-columns: repeat(2, 1fr);">
+                        <div class="card">
+                            <h3>📰 每天手动刷新闻</h3>
+                            <p>却总是漏掉重要信息</p>
+                        </div>
+                        <div class="card">
+                            <h3>🧠 跟 AI 说过的偏好</h3>
+                            <p>下次又要重新解释一遍</p>
+                        </div>
+                        <div class="card">
+                            <h3>⏰ 想让 AI 定时帮你做事</h3>
+                            <p>但它"下班"了</p>
+                        </div>
+                        <div class="card">
+                            <h3>👔 一个 AI 什么都会一点</h3>
+                            <p>但专业的事做不好</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 1.5rem; text-align: center;">
+                    <p style="font-size: var(--h3-size); color: var(--cyan);">OpenClaw 就是为了解决这些问题而生的</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- SLIDE 2: Agenda -->
     <section class="slide" id="slide-2">
         <div class="grid-bg"></div>
@@ -595,7 +633,7 @@
         <div class="slide-content">
             <div class="content-wrapper">
                 <p class="reveal section-label">01 / OPENING</p>
-                <h2 class="reveal"><span class="num">01</span>TODAY'S AGENDA</h2>
+                <h2 class="reveal"><span class="num">02</span>TODAY'S AGENDA</h2>
                 <div class="two-col">
                     <div class="reveal">
                         <div class="card">
@@ -702,15 +740,35 @@
                     </div>
                 </div>
                 <div class="reveal" style="margin-top: 0.8rem;">
-                    <pre style="margin: 0;">┌────────────────────────────────────┐
-│  OPENCLAW (多Agent协作平台)          │
-│  ┌──────┐ ┌──────┐ ┌──────┐       │
-│  │AgentA│ │AgentB│ │AgentC│ ← 专业  │
-│  └──────┘ └──────┘ └──────┘       │
-│  + Skills + Memory + Heartbeat      │
-├────────────────────────────────────┤
-│  大模型 (LLM) - MiniMax/Claude     │
-└────────────────────────────────────┘</pre>
+                    <!-- Visual Hierarchy Diagram -->
+                    <div style="background: rgba(0,255,255,0.05); border: 2px solid var(--cyan); border-radius: 12px; padding: 1.5rem; position: relative;">
+                        <p style="text-align: center; color: var(--cyan); font-family: var(--font-display); margin-bottom: 1rem;">OPENCLAW 多Agent协作平台</p>
+                        <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 1rem;">
+                            <div style="background: var(--bg-card); border: 2px solid var(--cyan); border-radius: 8px; padding: 1rem; text-align: center; min-width: 100px; box-shadow: 0 0 15px var(--cyan-dim);">
+                                <p style="color: var(--cyan); font-weight: 700; margin: 0;">Agent A</p>
+                                <p style="color: var(--text-muted); font-size: var(--small-size); margin: 0.3rem 0 0;">专业能力</p>
+                            </div>
+                            <div style="background: var(--bg-card); border: 2px solid var(--cyan); border-radius: 8px; padding: 1rem; text-align: center; min-width: 100px; box-shadow: 0 0 15px var(--cyan-dim);">
+                                <p style="color: var(--cyan); font-weight: 700; margin: 0;">Agent B</p>
+                                <p style="color: var(--text-muted); font-size: var(--small-size); margin: 0.3rem 0 0;">专业能力</p>
+                            </div>
+                            <div style="background: var(--bg-card); border: 2px solid var(--cyan); border-radius: 8px; padding: 1rem; text-align: center; min-width: 100px; box-shadow: 0 0 15px var(--cyan-dim);">
+                                <p style="color: var(--cyan); font-weight: 700; margin: 0;">Agent C</p>
+                                <p style="color: var(--text-muted); font-size: var(--small-size); margin: 0.3rem 0 0;">专业能力</p>
+                            </div>
+                        </div>
+                        <p style="text-align: center; color: var(--text-muted); font-size: var(--small-size);">+ Skills + Memory + Heartbeat</p>
+                        <div style="height: 1px; background: linear-gradient(90deg, transparent, var(--purple), transparent); margin: 1rem 0;"></div>
+                        <p style="text-align: center; color: var(--text-muted); font-size: var(--small-size); margin-bottom: 0.5rem;">底层：大模型 LLM</p>
+                        <div style="display: flex; justify-content: center; gap: 1rem;">
+                            <div style="background: var(--bg-card); border: 2px solid var(--purple); border-radius: 8px; padding: 0.8rem 1.5rem; text-align: center;">
+                                <p style="color: var(--purple); font-weight: 700; margin: 0;">MiniMax</p>
+                            </div>
+                            <div style="background: var(--bg-card); border: 2px solid var(--pink); border-radius: 8px; padding: 0.8rem 1.5rem; text-align: center;">
+                                <p style="color: var(--pink); font-weight: 700; margin: 0;">Claude</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -981,6 +1039,11 @@
             <div class="content-wrapper">
                 <p class="reveal section-label">05 / CORE CONFIG</p>
                 <h2 class="reveal"><span class="num">02</span>配置示例：IDENTITY & SOUL</h2>
+                <div class="reveal">
+                    <div class="quote" style="border-left-color: var(--cyan); margin-bottom: 1rem;">
+                        这些 Markdown 文件会在每次对话时作为 System Prompt 注入模型，是 OpenClaw 记住"你是谁"的核心机制。
+                    </div>
+                </div>
                 <div class="reveal">
                     <h3>📝 Identity 示例</h3>
                     <pre style="margin: 0;"># 我的个人 AI 助手
@@ -1320,6 +1383,17 @@
                     </div>
                 </div>
                 <div class="reveal" style="margin-top: 0.6rem;">
+                    <div class="card purple">
+                        <h3>🔧 核心实现</h3>
+                        <ul style="margin: 0;">
+                            <li><strong>Skill 类型</strong>：自定义 Python Skill</li>
+                            <li><strong>触发方式</strong>：Heartbeat 每30分钟调用</li>
+                            <li><strong>核心逻辑</strong>：调用平台 API → 过滤热门内容 → 格式化 → 飞书推送</li>
+                            <li><strong>Prompt 关键词</strong>：「抓取后只保留互动量 TOP 20，按热度排序输出」</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
                     <h3>💡 诞生背景</h3>
                     <ul>
                         <li><span style="color: var(--pink);">痛点</span>：手动刷短视频太浪费时间</li>
@@ -1357,6 +1431,35 @@
                         <h3>🔮 更多可能</h3>
                         <p>家庭助理 · 个人教练 · 客服机器人 · 取决于你的想象力！</p>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 22b: Getting Started -->
+    <section class="slide" id="slide-22b">
+        <div class="grid-bg"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="orb orb-pink"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label">09 / SUMMARY</p>
+                <h2 class="reveal" style="font-size: clamp(1.8rem, 4vw, 2.5rem);">🚀 现在就可以开始</h2>
+                <div class="reveal" style="margin-top: 2rem; text-align: left; max-width: 500px; margin-left: auto; margin-right: auto;">
+                    <div class="card" style="margin-bottom: 0.8rem;">
+                        <p style="font-size: var(--h3-size); margin: 0;"><span style="color: var(--cyan);">☐</span> Step 1：克隆仓库，按文档完成环境搭建（预计 30 分钟）</p>
+                    </div>
+                    <div class="card" style="margin-bottom: 0.8rem;">
+                        <p style="font-size: var(--h3-size); margin: 0;"><span style="color: var(--pink);">☐</span> Step 2：配置你的第一个 Identity 文件，定义你的 AI 助手角色</p>
+                    </div>
+                    <div class="card">
+                        <p style="font-size: var(--h3-size); margin: 0;"><span style="color: var(--green);">☐</span> Step 3：设置一个心跳任务，让它明天早上9点给你发一条消息</p>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 2rem;">
+                    <p style="color: var(--text-muted); font-size: var(--small-size);">越早开始配置，它就越早了解你</p>
                 </div>
             </div>
         </div>
@@ -1474,16 +1577,40 @@
                 <p class="reveal section-label">RESOURCES</p>
                 <h1 class="reveal" style="font-size: clamp(2rem, 5vw, 3.5rem);">资源汇总</h1>
                 <div class="reveal" style="margin-top: 2rem;">
-                    <div class="card" style="text-align: left; max-width: 600px; margin: 0 auto;">
-                        <p><strong>🌐 OpenClaw</strong><br><a href="https://github.com/anthropics/claude-code" target="_blank">Claude Code</a></p>
-                        <p><strong>🧠 agency-agents</strong><br><a href="https://github.com/msitarzewski/agency-agents" target="_blank">https://github.com/msitarzewski/agency-agents</a></p>
-                        <p><strong>📦 ClawHub</strong><br>Skills marketplace</p>
-                        <p><strong>🔧 内容捕手</strong><br><a href="https://github.com/judefluen-coder/content-hunter" target="_blank">https://github.com/judefluen-coder/content-hunter</a></p>
+                    <div class="card-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 700px; margin: 0 auto; gap: 1rem;">
+                        <div class="card" style="text-align: center;">
+                            <p style="font-size: var(--h3-size); margin-bottom: 0.5rem;">🌐 Claude Code</p>
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://github.com/anthropics/claude-code" style="border-radius: 8px; margin-bottom: 0.5rem;" alt="QR">
+                            <p style="font-size: var(--small-size); margin: 0;">OpenClaw 官方</p>
+                        </div>
+                        <div class="card" style="text-align: center;">
+                            <p style="font-size: var(--h3-size); margin-bottom: 0.5rem;">🧠 agency-agents</p>
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://github.com/msitarzewski/agency-agents" style="border-radius: 8px; margin-bottom: 0.5rem;" alt="QR">
+                            <p style="font-size: var(--small-size); margin: 0;">多 Agents 协作</p>
+                        </div>
+                        <div class="card" style="text-align: center;">
+                            <p style="font-size: var(--h3-size); margin-bottom: 0.5rem;">📦 ClawHub</p>
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://claude.com/claude-code" style="border-radius: 8px; margin-bottom: 0.5rem;" alt="QR">
+                            <p style="font-size: var(--small-size); margin: 0;">Skills marketplace</p>
+                        </div>
+                        <div class="card" style="text-align: center;">
+                            <p style="font-size: var(--h3-size); margin-bottom: 0.5rem;">🔧 内容捕手</p>
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://github.com/judefluen-coder/content-hunter" style="border-radius: 8px; margin-bottom: 0.5rem;" alt="QR">
+                            <p style="font-size: var(--small-size); margin: 0;">GitHub 仓库</p>
+                        </div>
                     </div>
                 </div>
                 <div class="reveal" style="margin-top: 2rem;">
                     <h1 style="font-size: clamp(1.5rem, 3vw, 2rem);">谢谢观看</h1>
                     <p class="subtitle" style="margin-top: 0.5rem;">Q & A</p>
+                </div>
+                <div class="reveal" style="margin-top: 1.5rem;">
+                    <p style="color: var(--text-muted); font-size: var(--small-size);">💬 可以先聊聊这些：</p>
+                    <p style="color: var(--text-muted); font-size: var(--small-size); margin-top: 0.5rem;">
+                        • Mac Mini 部署的具体配置要求是什么？<br>
+                        • MiniMax 2.5 和 Claude 3.5 在实际使用中体感差异大吗？<br>
+                        • 心跳任务失败了怎么排查？
+                    </p>
                 </div>
             </div>
         </div>
