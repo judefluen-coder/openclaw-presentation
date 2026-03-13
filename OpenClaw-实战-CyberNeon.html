@@ -977,11 +977,14 @@
                 <p class="reveal section-label">03 / CORE FEATURES</p>
                 <h2 class="reveal"><span class="num">02</span>记忆系统 MEMORY</h2>
                 <div class="reveal">
-                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
-                        <div class="card"><h3>🧠 对话级</h3><p>当前会话上下文</p></div>
-                        <div class="card"><h3>📝 文档级</h3><p>memory/ 目录文件</p></div>
-                        <div class="card"><h3>👤 Identity</h3><p>角色/人设/背景</p></div>
-                        <div class="card"><h3>💫 Soul</h3><p>对话风格/偏好</p></div>
+                    <div class="quote" style="border-left-color: var(--purple); margin-bottom: 0.8rem;">
+                        大语言模型本质上是无状态的函数：给定输入，产出输出，然后遗忘一切。
+                    </div>
+                </div>
+                <div class="reveal">
+                    <div class="card purple">
+                        <p style="margin: 0;"><code>MEMORY.md</code> 是长期记忆的核心载体，存放经过策划的持久事实——技术栈选择、架构决策、长期目标。</p>
+                        <p style="margin: 0.5rem 0 0; color: var(--cyan);">关键设计：它仅在私聊会话中加载，永远不会在群组上下文中注入，从架构层面保护隐私。</p>
                     </div>
                 </div>
                 <div class="reveal" style="margin-top: 0.6rem;">
@@ -1289,28 +1292,35 @@
                     </div>
                 </div>
                 <div class="reveal">
-                    <h3>📒 memory/ 目录结构</h3>
-                    <pre style="margin: 0;">memory/
-├── 人物库.md         # 重要人物关系
-├── 知识库.md         # 专业知识积累
-├── 偏好库.md         # 使用者偏好习惯
-└── 技能库.md         # 已掌握技能记录</pre>
+                    <h3>📒 ~/.openclaw/workspace/ 目录结构</h3>
+                    <pre style="margin: 0;">~/.openclaw/workspace/
+├── MEMORY.md              # 长期策划记忆：偏好、决策、持久事实
+├── memory/
+│   ├── 2026-02-13.md      # 今日追加日志
+│   ├── 2026-02-12.md      # 昨日日志
+│   └── ...                 # 历史日志
+├── sessions/
+│   └── 2026-01-30-memory-system-research.md  # 会话转录
+├── USER.md                # 用户身份与偏好
+├── SOUL.md                # Agent 人格设定
+└── AGENTS.md              # 核心指令</pre>
                 </div>
                 <div class="reveal" style="margin-top: 0.8rem;">
-                    <h3>📝 长期记忆示例：人物库.md</h3>
-                    <pre style="margin: 0;"># 人物库
+                    <h3>📝 长期记忆示例：MEMORY.md</h3>
+                    <pre style="margin: 0;"># MEMORY.md - 长期策划记忆
 
-## 家人
-- 妈妈：喜欢养生，关注健康类内容
-- 爸爸：关心时事，每天需要新闻播报
+## 偏好
+- 记账：消费必须记到飞书「日常开销」表格
+- 投资：关注新能源、科技板块
+- 消息：重要信息要汇总后汇报
 
-## 重要联系人
-- 张三（同事）：项目A负责人，周二定期沟通
-- 李四（投资人）：每月汇报项目进展
+## 决策
+- 投资风格：长线持有，不做短线
+- 学习方向：重点关注 AI Agent 领域
 
-## 偏好记忆
-- 与家人沟通时使用简洁温和的语言
-- 重要事项单独@确认，不要群发</pre>
+## 持久事实
+- 住在深圳，从事互联网工作
+- 有A股投资经验，喜欢研究AI技术</pre>
                 </div>
             </div>
         </div>
