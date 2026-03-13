@@ -1,0 +1,2221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw 实战 - Cyber Neon</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #0f0f18;
+            --text-primary: #ffffff;
+            --text-secondary: #8888aa;
+            --text-muted: #555566;
+            --cyan: #00ffff;
+            --cyan-dim: rgba(0, 255, 255, 0.1);
+            --cyan-glow: rgba(0, 255, 255, 0.4);
+            --pink: #ff0080;
+            --pink-dim: rgba(255, 0, 128, 0.1);
+            --purple: #8000ff;
+            --yellow: #ffff00;
+            --green: #00ff88;
+            --accent: var(--cyan);
+            --border: rgba(0, 255, 255, 0.15);
+            --font-display: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --title-size: clamp(1.8rem, 5vw, 4rem);
+            --h2-size: clamp(1.3rem, 3vw, 2.2rem);
+            --h3-size: clamp(1rem, 2vw, 1.5rem);
+            --body-size: clamp(0.7rem, 1.2vw, 1rem);
+            --small-size: clamp(0.55rem, 0.9vw, 0.75rem);
+            --slide-padding: clamp(1rem, 4vw, 3rem);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow-x: hidden; }
+        html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+        body { background: var(--bg-primary); color: var(--text-primary); font-family: var(--font-body); font-size: var(--body-size); line-height: 1.5; font-weight: 500; }
+
+        /* === SLIDE BASE === */
+        .slide {
+            width: 100vw; height: 100vh; height: 100dvh;
+            overflow: hidden; scroll-snap-align: start;
+            display: flex; flex-direction: column; position: relative;
+            background: var(--bg-primary);
+        }
+        .slide-content {
+            flex: 1; display: flex; flex-direction: column;
+            justify-content: center; max-height: 100%; overflow-y: auto;
+            padding: var(--slide-padding);
+            padding-top: calc(var(--slide-padding) + 20px);
+        }
+        .slide-content::-webkit-scrollbar { width: 3px; }
+        .slide-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+        /* === CYBER NEON EFFECTS === */
+        /* Grid background */
+        .grid-bg {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(var(--cyan-dim) 1px, transparent 1px),
+                linear-gradient(90deg, var(--cyan-dim) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.4;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Perspective grid */
+        .grid-perspective {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                linear-gradient(transparent 45%, var(--cyan-dim) 45%, var(--cyan-dim) 55%, transparent 55%),
+                linear-gradient(90deg, transparent 45%, var(--cyan-dim) 45%, var(--cyan-dim) 55%, transparent 55%);
+            background-size: 100% 100%, 60px 100%;
+            transform: perspective(500px) rotateX(70deg);
+            transform-origin: center bottom;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Glow orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .orb-cyan {
+            width: 500px; height: 500px;
+            background: var(--cyan);
+            opacity: 0.12;
+            top: -200px; right: -100px;
+            animation: orbFloat 15s ease-in-out infinite;
+        }
+        .orb-pink {
+            width: 400px; height: 400px;
+            background: var(--pink);
+            opacity: 0.1;
+            bottom: -150px; left: -100px;
+            animation: orbFloat 20s ease-in-out infinite reverse;
+        }
+        .orb-purple {
+            width: 300px; height: 300px;
+            background: var(--purple);
+            opacity: 0.08;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, 30px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.08; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.15; transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        /* Corner frames */
+        .corner {
+            position: absolute;
+            width: 40px; height: 40px;
+            border: 2px solid var(--cyan);
+            z-index: 2;
+            opacity: 0.6;
+        }
+        .corner-tl { top: 15px; left: 15px; border-right: none; border-bottom: none; }
+        .corner-tr { top: 15px; right: 15px; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: 15px; left: 15px; border-right: none; border-top: none; }
+        .corner-br { bottom: 15px; right: 15px; border-left: none; border-top: none; }
+
+        /* Scanlines */
+        .scanlines {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                0deg, transparent, transparent 2px,
+                rgba(0, 0, 0, 0.1) 2px, rgba(0, 0, 0, 0.1) 4px
+            );
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0.3;
+        }
+
+        /* === CONTENT === */
+        .content-wrapper {
+            position: relative; z-index: 2;
+            max-width: min(95vw, 1100px); margin: 0 auto; width: 100%;
+        }
+
+        /* Typography */
+        h1 {
+            font-family: var(--font-display);
+            font-size: var(--title-size);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: linear-gradient(135deg, var(--cyan), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: drop-shadow(0 0 20px var(--cyan-glow)); }
+            50% { filter: drop-shadow(0 0 40px var(--cyan)); }
+        }
+
+        h1 .highlight {
+            background: linear-gradient(135deg, var(--pink), var(--yellow));
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        h2 {
+            font-family: var(--font-display);
+            font-size: var(--h2-size);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        h2 .num {
+            font-size: 0.7em;
+            color: var(--cyan);
+            opacity: 0.7;
+            font-family: var(--font-mono);
+        }
+
+        h3 {
+            font-family: var(--font-display);
+            font-size: var(--h3-size);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        h4 {
+            font-size: var(--body-size);
+            font-weight: 700;
+            color: var(--pink);
+            margin: 0.6rem 0 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        p { margin-bottom: 0.6rem; color: var(--text-secondary); }
+        ul, ol { margin: 0.4rem 0 0.8rem 1.4rem; }
+        li { margin-bottom: 0.35rem; color: var(--text-secondary); font-size: var(--body-size); }
+        li::marker { color: var(--cyan); }
+
+        /* Code */
+        code {
+            background: var(--bg-secondary);
+            padding: 0.15rem 0.4rem;
+            border-radius: 3px;
+            font-family: var(--font-mono);
+            font-size: 0.9em;
+            color: var(--cyan);
+            border: 1px solid var(--border);
+        }
+
+        pre {
+            background: var(--bg-secondary);
+            padding: 0.8rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 0.6rem 0;
+            border: 1px solid var(--border);
+            font-family: var(--font-mono);
+            font-size: var(--small-size);
+            position: relative;
+        }
+
+        pre::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--cyan), var(--pink), var(--purple));
+            border-radius: 6px 6px 0 0;
+        }
+
+        pre code { background: none; padding: 0; color: var(--text-primary); border: none; }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.6rem 0;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px; height: 100%;
+            background: var(--cyan);
+            opacity: 0.5;
+        }
+
+        .card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px var(--cyan-dim);
+        }
+
+        .card.highlight::before { background: var(--pink); }
+        .card.purple::before { background: var(--purple); }
+        .card.yellow::before { background: var(--yellow); }
+        .card.green::before { background: var(--green); }
+
+        .card h3 { font-size: var(--body-size); margin-bottom: 0.4rem; }
+        .card p { font-size: var(--small-size); margin: 0; }
+        .card ul { font-size: var(--small-size); margin-bottom: 0; }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+            gap: 0.7rem;
+            margin: 0.6rem 0;
+        }
+
+        /* Carousel */
+        .carousel {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 1rem auto 0;
+            overflow: hidden;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            padding: 0.5rem;
+            box-sizing: border-box;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: auto;
+            max-height: 45vh;
+            object-fit: contain;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .carousel-caption {
+            text-align: center;
+            padding: 0.5rem;
+            color: var(--cyan);
+            font-size: var(--small-size);
+            font-family: var(--font-mono);
+        }
+
+        .carousel-nav {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+        }
+
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .carousel-dot.active {
+            background: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan);
+            transform: scale(1.2);
+        }
+
+        .carousel-dot:hover {
+            background: var(--cyan-dim);
+        }
+
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .carousel-arrow:hover {
+            background: var(--cyan);
+            color: var(--bg);
+        }
+
+        .carousel-arrow.prev { left: 10px; }
+        .carousel-arrow.next { right: 10px; }
+
+        /* Tags */
+        .tag {
+            display: inline-block;
+            background: var(--cyan-dim);
+            color: var(--cyan);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: var(--small-size);
+            margin-right: 0.4rem;
+            margin-bottom: 0.4rem;
+            font-family: var(--font-mono);
+            border: 1px solid var(--border);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .tag.highlight { background: var(--pink-dim); color: var(--pink); border-color: var(--pink-dim); }
+        .tag.purple { background: rgba(128, 0, 255, 0.1); color: var(--purple); border-color: rgba(128, 0, 255, 0.2); }
+
+        /* Layout */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
+        .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; align-items: start; }
+        @media (max-width: 768px) { .two-col, .three-col { grid-template-columns: 1fr; } }
+
+        /* Progress bar */
+        .progress-bar {
+            position: fixed; top: 0; left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--cyan), var(--pink));
+            width: 0%;
+            z-index: 1000;
+            box-shadow: 0 0 10px var(--cyan);
+        }
+
+        /* Nav dots */
+        .nav-dots {
+            position: fixed; right: 1rem; top: 50%;
+            transform: translateY(-50%);
+            display: flex; flex-direction: column; gap: 0.6rem;
+            z-index: 100;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .nav-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .nav-dot:hover {
+            background: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan);
+        }
+
+        .nav-dot.active {
+            background: var(--cyan);
+            box-shadow: 0 0 15px var(--cyan);
+            transform: scale(1.3);
+        }
+
+        /* Section label */
+        .section-label {
+            font-size: var(--small-size);
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-mono);
+        }
+
+        /* Quote */
+        .quote {
+            border-left: 3px solid var(--pink);
+            padding-left: 1rem;
+            margin: 1rem 0;
+            color: var(--text-primary);
+            font-style: italic;
+            font-size: var(--h3-size);
+        }
+
+        /* Step */
+        .step {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.6rem; height: 1.6rem;
+            background: var(--cyan-dim);
+            color: var(--cyan);
+            border-radius: 50%;
+            font-size: var(--small-size);
+            font-weight: 700;
+            margin-right: 0.5rem;
+            flex-shrink: 0;
+            border: 1px solid var(--cyan);
+        }
+
+        /* Table */
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.6rem 0;
+            font-size: var(--small-size);
+        }
+
+        .compare-table th, .compare-table td {
+            padding: 0.6rem;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .compare-table th {
+            background: var(--bg-secondary);
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-family: var(--font-display);
+        }
+
+        /* Links */
+        a { color: var(--cyan); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* Keyboard hint */
+        .keyboard-hint {
+            position: fixed;
+            bottom: 1rem; right: 1rem;
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            opacity: 0.4;
+            z-index: 100;
+            font-family: var(--font-mono);
+        }
+
+        /* === ANIMATIONS === */
+        /* Reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .slide.visible .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Staggered delays */
+        .slide.visible .reveal:nth-child(1) { transition-delay: 0.1s; }
+        .slide.visible .reveal:nth-child(2) { transition-delay: 0.2s; }
+        .slide.visible .reveal:nth-child(3) { transition-delay: 0.3s; }
+        .slide.visible .reveal:nth-child(4) { transition-delay: 0.4s; }
+        .slide.visible .reveal:nth-child(5) { transition-delay: 0.5s; }
+
+        /* Glow pulse */
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 20px var(--cyan-dim); }
+            50% { box-shadow: 0 0 40px var(--cyan-dim), 0 0 60px var(--cyan-dim); }
+        }
+
+        .card:hover {
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        /* Float animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Blink cursor */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px; height: 1.2em;
+            background: var(--cyan);
+            vertical-align: text-bottom;
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
+        }
+
+        /* Reduce motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.15s !important;
+            }
+            html { scroll-behavior: auto; }
+            .reveal { opacity: 1; transform: none; }
+        }
+
+        /* Title slide specific */
+        .title-content {
+            text-align: center;
+        }
+
+        .title-content h1 {
+            font-size: clamp(2.5rem, 8vw, 6rem);
+        }
+
+        .title-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .title-line::before,
+        .title-line::after {
+            content: '';
+            height: 1px;
+            width: 100px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+        }
+
+        .prompt {
+            color: var(--pink);
+            font-family: var(--font-mono);
+            font-size: var(--body-size);
+        }
+
+        .subtitle {
+            font-size: var(--h3-size);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        /* Glitch effect for title */
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+
+        h1:hover {
+            animation: glitch 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <nav class="nav-dots" id="navDots"></nav>
+    <div class="keyboard-hint">← → SPACE SCROLL</div>
+
+    <!-- SLIDE 1: Title -->
+    <section class="slide" id="slide-1">
+        <div class="grid-bg"></div>
+        <div class="grid-perspective"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="orb orb-pink"></div>
+        <div class="scanlines"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal prompt">$ ./run.sh --topic="OpenClaw实战"</p>
+                <h1 class="reveal">OpenClaw <span class="highlight">实战</span><span class="cursor"></span></h1>
+                <div class="title-line reveal">
+                    <span class="tag">#AI</span>
+                    <span class="tag">#自动化</span>
+                    <span class="tag">#助手</span>
+                </div>
+                <p class="reveal subtitle">个人使用技巧与经验分享</p>
+                <p class="reveal" style="margin-top: 1.5rem; font-size: var(--small-size); color: #666;">
+                    by <span style="color: var(--cyan);">@jiangfeng14</span>
+                </p>
+                <p class="reveal" style="margin-top: 0.5rem; font-size: var(--small-size); color: #555;">
+                    Made with <a href="https://github.com/zarazhangrui/frontend-slides" style="color: var(--pink);" target="_blank">Claude Code + frontend-slides</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 1.5: Scene Introduction -->
+    <section class="slide" id="slide-1b">
+        <div class="grid-bg"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="orb orb-pink"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">01 / OPENING</p>
+                <h2 class="reveal">你是否有过这样的困扰？</h2>
+                <div class="reveal" style="margin-top: 1rem;">
+                    <div class="card-grid" style="grid-template-columns: repeat(2, 1fr);">
+                        <div class="card">
+                            <h3>🤖 AI 什么话都能接</h3>
+                            <p>但什么活都没法直接干</p>
+                        </div>
+                        <div class="card">
+                            <h3>🧠 跟 AI 说过的偏好</h3>
+                            <p>下次又要重新解释一遍</p>
+                        </div>
+                        <div class="card">
+                            <h3>⏰ 想让 AI 定时帮你做事</h3>
+                            <p>但它"下班"了</p>
+                        </div>
+                        <div class="card">
+                            <h3>🤖 一个 AI 什么都会一点</h3>
+                            <p>但专业的事做不好</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 1.5rem; text-align: center;">
+                    <p style="font-size: var(--h3-size); color: var(--cyan);">OpenClaw 就是为了解决这些问题而生的</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 2: Agenda -->
+    <section class="slide" id="slide-2">
+        <div class="grid-bg"></div>
+        <div class="orb orb-purple"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">01 / OPENING</p>
+                <h2 class="reveal"><span class="num">02</span>TODAY'S AGENDA</h2>
+                <div class="two-col">
+                    <div class="reveal">
+                        <div class="card">
+                            <h3>📚 大纲</h3>
+                            <ol style="margin-top: 0.5rem;">
+                                <li>概念入门：什么是 OpenClaw？</li>
+                                <li>核心特性：心跳、记忆、多Agents</li>
+                                <li>我的配置：Mac Mini + MiniMax + 飞书</li>
+                                <li>核心配置：identity/soul/memory/heartbeat</li>
+                                <li>踩坑与经验：方法论</li>
+                                <li>学习路径与资源</li>
+                                <li>实践案例</li>
+                                <li>总结与展望</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="reveal">
+                        <div class="card highlight">
+                            <h3>🎯 预期收获</h3>
+                            <ul style="margin-top: 0.5rem;">
+                                <li>理解 OpenClaw 的定位</li>
+                                <li>掌握配置思路</li>
+                                <li>避开常见坑</li>
+                                <li>找到学习方向</li>
+                                <li>获得实践灵感</li>
+                            </ul>
+                        </div>
+                        <div class="card green" style="margin-top: 0.6rem;">
+                            <h3>⏱️ 时长</h3>
+                            <p style="margin: 0; font-size: var(--h3-size);">30-45 MIN</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRANSITION: CONCEPTS -->
+    <section class="slide" id="slide-transition-2">
+        <div class="grid-bg"></div>
+        <div class="orb orb-purple"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label" style="font-size: var(--h2-size);">02</p>
+                <h1 class="reveal" style="font-size: clamp(2rem, 6vw, 4rem);">核心概念</h1>
+                <p class="reveal subtitle">模型、Agent、OpenClaw 的关系</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 3: What is OpenClaw -->
+    <section class="slide" id="slide-3">
+        <div class="grid-bg"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">02 / CONCEPTS</p>
+                <h2 class="reveal"><span class="num">01</span>OPENCLAW 是什么？</h2>
+                <div class="reveal">
+                    <div class="card">
+                        <p style="font-size: var(--h3-size;">一款<span style="color: var(--cyan);">开源、自托管 AI Agent 框架</span>，像拥有"主动性"的数字员工，能操作电脑、浏览网页、处理文件，通过飞书/Telegram/微信执行指令。<span style="color: var(--text-muted);">（可运行在 Mac/Linux/云服务器，我选择 Mac Mini 是因为 7×24 运行、静音、省电）</span></p>
+                        <p style="margin-top: 0.5rem; color: var(--text-muted);">关键词：7×24小时运行 · 定时任务 · 长期记忆 · 多Agents协作</p>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.8rem;">
+                    <div class="card highlight">
+                        <h3>🎯 解决什么问题？</h3>
+                        <ul style="margin: 0;">
+                            <li>ChatGPT 用完就关机 → <span style="color: var(--cyan);">OpenClaw 7×24 待命</span></li>
+                            <li>每次都要重新解释背景 → <span style="color: var(--cyan);">记住你的习惯和偏好</span></li>
+                            <li>只能手动触发任务 → <span style="color: var(--cyan);">定时自动执行</span></li>
+                            <li>一个 Agent 什么都会一点 → <span style="color: var(--cyan);">专业 Agent 团队协作</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.8rem;">
+                    <h3>🔄 传统 AI 助手 vs OpenClaw</h3>
+                    <table class="compare-table">
+                        <tr><th>DIMENSION</th><th>CHATGPT/CLAUDE</th><th>OPENCLAW</th></tr>
+                        <tr><td>运行方式</td><td>用时打开</td><td style="color: var(--cyan);">7×24 持续运行</td></tr>
+                        <tr><td>定时任务</td><td>不支持</td><td style="color: var(--cyan);">心跳机制原生支持</td></tr>
+                        <tr><td>记忆</td><td>会话级别</td><td style="color: var(--cyan);">持久化存储</td></tr>
+                        <tr><td>多Agents</td><td>单 Agent</td><td style="color: var(--cyan);">多 Agents 协作</td></tr>
+                        <tr><td>交互方式</td><td>网页/APP</td><td style="color: var(--cyan);">飞书/微信/命令行</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 4: Core Concepts -->
+    <section class="slide" id="slide-4">
+        <div class="grid-bg"></div>
+        <div class="orb orb-pink"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">02 / CONCEPTS</p>
+                <h2 class="reveal"><span class="num">02</span>核心概念：模型、Agent、OpenClaw</h2>
+                <div class="reveal">
+                    <div class="card" style="border: 2px solid var(--cyan);">
+                        <p style="font-size: var(--h3-size); line-height: 1.8;">
+                            <span style="color: var(--cyan);">大模型</span> = 🧠 大脑 <span style="color: var(--text-muted);">提供基础智能</span>
+                        </p>
+                        <p style="font-size: var(--h3-size); line-height: 1.8;">
+                            <span style="color: var(--pink);">Agent</span> = 👤 员工 <span style="color: var(--text-muted);">有记忆、能工作</span>
+                        </p>
+                        <p style="font-size: var(--h3-size); line-height: 1.8;">
+                            <span style="color: var(--purple);">OpenClaw</span> = 🏢 工作室 <span style="color: var(--text-muted);">多Agents协作平台</span>
+                        </p>
+                        <p style="font-size: var(--h3-size); line-height: 1.8;">
+                            <span style="color: var(--yellow);">Skill</span> = 📚 技能书 <span style="color: var(--text-muted);">扩展能力</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.8rem;">
+                    <!-- Visual Hierarchy Diagram -->
+                    <div style="background: rgba(0,255,255,0.05); border: 2px solid var(--cyan); border-radius: 12px; padding: 1.2rem; position: relative;">
+                        <p style="text-align: center; color: var(--cyan); font-family: var(--font-display); margin-bottom: 0.8rem;">🖥️ OpenClaw 架构图</p>
+                        <!-- Top Layer: OpenClaw -->
+                        <div style="background: linear-gradient(135deg, rgba(0,255,255,0.1), rgba(0,255,255,0.05)); border: 2px solid var(--cyan); border-radius: 10px; padding: 0.8rem; margin-bottom: 0.6rem; text-align: center;">
+                            <p style="color: var(--cyan); font-weight: 700; margin: 0;">🏢 OpenClaw 工作室</p>
+                            <p style="color: var(--text-muted); font-size: var(--small-size); margin: 0.3rem 0 0;">多Agents协作平台 + Skills扩展 + Heartbeat定时</p>
+                        </div>
+                        <!-- Arrow down -->
+                        <p style="text-align: center; color: var(--cyan); margin: 0.2rem 0;">⬇️ 分配任务</p>
+                        <!-- Middle Layer: Agents -->
+                        <div style="display: flex; justify-content: center; gap: 0.6rem; margin-bottom: 0.5rem;">
+                            <div style="background: var(--bg-card); border: 2px solid var(--pink); border-radius: 8px; padding: 0.6rem 0.8rem; text-align: center; flex: 1; max-width: 120px; box-shadow: 0 0 15px rgba(255,0,128,0.2);">
+                                <p style="color: var(--pink); font-weight: 700; margin: 0; font-size: var(--small-size);">👤 Agent A</p>
+                                <p style="color: var(--text-muted); font-size: 0.65rem; margin: 0.2rem 0 0;">记账专家</p>
+                            </div>
+                            <div style="background: var(--bg-card); border: 2px solid var(--purple); border-radius: 8px; padding: 0.6rem 0.8rem; text-align: center; flex: 1; max-width: 120px; box-shadow: 0 0 15px rgba(128,0,255,0.2);">
+                                <p style="color: var(--purple); font-weight: 700; margin: 0; font-size: var(--small-size);">👤 Agent B</p>
+                                <p style="color: var(--text-muted); font-size: 0.65rem; margin: 0.2rem 0 0;">天气播报员</p>
+                            </div>
+                            <div style="background: var(--bg-card); border: 2px solid var(--yellow); border-radius: 8px; padding: 0.6rem 0.8rem; text-align: center; flex: 1; max-width: 120px; box-shadow: 0 0 15px rgba(255,200,0,0.2);">
+                                <p style="color: var(--yellow); font-weight: 700; margin: 0; font-size: var(--small-size);">👤 Agent C</p>
+                                <p style="color: var(--text-muted); font-size: 0.65rem; margin: 0.2rem 0 0;">内容捕手</p>
+                            </div>
+                        </div>
+                        <p style="text-align: center; color: var(--pink); margin: 0.2rem 0;">⬇️ 调用能力</p>
+                        <!-- Bottom Layer: LLM -->
+                        <div style="background: linear-gradient(135deg, rgba(128,0,255,0.1), rgba(255,0,128,0.05)); border: 2px solid var(--purple); border-radius: 10px; padding: 0.8rem; text-align: center;">
+                            <p style="color: var(--purple); font-weight: 700; margin: 0;">🧠 大模型 LLM（底层能力）</p>
+                            <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 0.5rem;">
+                                <div style="background: rgba(128,0,255,0.2); border-radius: 6px; padding: 0.4rem 0.8rem;">
+                                    <p style="color: var(--purple); font-weight: 700; margin: 0; font-size: var(--small-size);">MiniMax</p>
+                                </div>
+                                <div style="background: rgba(255,0,128,0.2); border-radius: 6px; padding: 0.4rem 0.8rem;">
+                                    <p style="color: var(--pink); font-weight: 700; margin: 0; font-size: var(--small-size);">Claude</p>
+                                </div>
+                                <div style="background: rgba(0,255,255,0.2); border-radius: 6px; padding: 0.4rem 0.8rem;">
+                                    <p style="color: var(--cyan); font-weight: 700; margin: 0; font-size: var(--small-size);">GPT</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRANSITION: CORE FEATURES -->
+    <section class="slide" id="slide-transition-3">
+        <div class="grid-bg"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="orb orb-pink"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label" style="font-size: var(--h2-size);">03</p>
+                <h1 class="reveal" style="font-size: clamp(2rem, 6vw, 4rem);">核心功能</h1>
+                <p class="reveal subtitle">Heartbeat、Memory、Multi-Agent</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 5: Heartbeat -->
+    <section class="slide" id="slide-5">
+        <div class="grid-bg"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">03 / CORE FEATURES</p>
+                <h2 class="reveal"><span class="num">01</span>定时任务 & 心跳机制</h2>
+                <div class="reveal">
+                    <p style="margin-bottom: 1rem;">两者都像"闹钟"，让 AI 助手自动干活，但逻辑完全不同：</p>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <div class="two-col">
+                        <div class="card highlight">
+                            <h3>⏱️ 定时任务 (Cron)</h3>
+                            <p style="color: var(--text-muted); font-size: var(--small-size);">精准的"执行机器"</p>
+                            <ul style="margin: 0.5rem 0 0; font-size: var(--small-size);">
+                                <li><strong>触发</strong>：精准时间点/间隔</li>
+                                <li><strong>特点</strong>：独立运行，无记忆</li>
+                                <li><strong>打扰</strong>：到点就执行</li>
+                                <li><strong>用途</strong>：定点发报、定时备份</li>
+                            </ul>
+                        </div>
+                        <div class="card purple">
+                            <h3>💓 心跳机制 (Heartbeat)</h3>
+                            <p style="color: var(--text-muted); font-size: var(--small-size);">会"思考"的"巡视员"</p>
+                            <ul style="margin: 0.5rem 0 0; font-size: var(--small-size);">
+                                <li><strong>触发</strong>：定期巡查，判断时机</li>
+                                <li><strong>特点</strong>：带记忆，感知上下文</li>
+                                <li><strong>打扰</strong>：有事才通知</li>
+                                <li><strong>用途</strong>：持续监控、批量提醒</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.8rem;">
+                    <div class="card" style="border-left: 3px solid var(--cyan);">
+                        <h3>🤔 如何选择？</h3>
+                        <p style="margin: 0;">需要准点执行？→ <span style="color: var(--cyan);">Cron</span> &nbsp;|&nbsp; 需要批量检查？→ <span style="color: var(--pink);">Heartbeat</span> &nbsp;|&nbsp; 追求极致效率？→ <span style="color: var(--green);">两者结合</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 6: Memory -->
+    <section class="slide" id="slide-6">
+        <div class="grid-bg"></div>
+        <div class="orb orb-purple"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">03 / CORE FEATURES</p>
+                <h2 class="reveal"><span class="num">02</span>记忆系统 MEMORY</h2>
+                <div class="reveal">
+                    <div class="quote" style="border-left-color: var(--purple); margin-bottom: 0.8rem;">
+                        大语言模型本质上是无状态的函数：给定输入，产出输出，然后遗忘一切。
+                    </div>
+                </div>
+                <div class="reveal">
+                    <div class="card purple">
+                        <p style="margin: 0;"><code>MEMORY.md</code> 是长期记忆的核心载体，存放经过策划的持久事实——技术栈选择、架构决策、长期目标。</p>
+                        <p style="margin: 0.5rem 0 0; color: var(--cyan);">关键设计：它仅在私聊会话中加载，永远不会在群组上下文中注入，从架构层面保护隐私。</p>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <h3>📁 工作目录结构</h3>
+                    <pre style="margin: 0;">~/.openclaw/workspace/
+├── IDENTITY.md   # 身份定义
+├── SOUL.md       # 对话风格
+├── MEMORY.md     # 长期记忆
+├── AGENTS.md     # 工作规范
+├── HEARTBEAT.md  # 心跳任务
+└── memory/       # 每日记忆</pre>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <h3>⚠️ 关键原则</h3>
+                    <ul>
+                        <li><span style="color: var(--cyan);">记忆要"写"出来</span>：重要内容存到文件，不要只靠对话</li>
+                        <li><span style="color: var(--pink);">群聊单独记忆</span>：默认只记私聊，需为每个群建独立文件</li>
+                        <li><span style="color: var(--yellow);">定期整理</span>：memory 文件会越来越大，需要定期精简</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 7: Multi Agents -->
+    <section class="slide" id="slide-7">
+        <div class="grid-bg"></div>
+        <div class="orb orb-pink"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">03 / CORE FEATURES</p>
+                <h2 class="reveal"><span class="num">03</span>多 Agents 协作</h2>
+                <div class="reveal">
+                    <p>通过 GitHub 项目 <a href="https://github.com/msitarzewski/agency-agents" target="_blank">agency-agents</a> 可以调用 100+ 专业 Agents 协同工作。</p>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="card"><h3>ENGINEERING</h3><p>16 种</p></div>
+                        <div class="card highlight"><h3>MARKETING</h3><p>18 种</p></div>
+                        <div class="card"><h3>SALES</h3><p>8 种</p></div>
+                        <div class="card purple"><h3>SPECIALIZED</h3><p>14 种</p></div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <h3>📋 多 Agents 配置示例</h3>
+                    <pre style="margin: 0; font-size: var(--small-size);">{
+  "agents": {
+    "list": [
+      { "id": "main", "workspace": "~/.openclaw/workspace" },
+      { "id": "content", "workspace": "~/.openclaw/workspace-content" },
+      { "id": "ops", "workspace": "~/.openclaw/workspace-ops" }
+    ]
+  },
+  "channels": {
+    "feishu": {
+      "accounts": {
+        "main": { "appId": "xxx1" },
+        "content": { "appId": "xxx2" },
+        "ops": { "appId": "xxx3" }
+      }
+    }
+  },
+  "bindings": [
+    { "agentId": "main", "match": { "accountId": "main" } },
+    { "agentId": "content", "match": { "accountId": "content" } },
+    { "agentId": "ops", "match": { "accountId": "ops" } }
+  ]
+}</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRANSITION: MY SETUP -->
+    <section class="slide" id="slide-transition-4">
+        <div class="grid-bg"></div>
+        <div class="orb orb-pink"></div>
+        <div class="orb orb-green"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label" style="font-size: var(--h2-size);">04</p>
+                <h1 class="reveal" style="font-size: clamp(2rem, 6vw, 4rem);">我的部署</h1>
+                <p class="reveal subtitle">Mac Mini + MiniMax + 飞书</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 8: My Config - Mac -->
+    <section class="slide" id="slide-8">
+        <div class="grid-bg"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">04 / MY SETUP</p>
+                <h2 class="reveal"><span class="num">01</span>我的部署方案：Mac Mini</h2>
+                <div class="reveal">
+                    <div class="card">
+                        <h3>🏠 为什么要 24 小时运行？</h3>
+                        <ul style="margin: 0;">
+                            <li><span style="color: var(--cyan);">定时任务</span>：每天9点发新闻</li>
+                            <li><span style="color: var(--cyan);">即时响应</span>：发消息要立刻回答</li>
+                            <li><span style="color: var(--cyan);">记忆连续</span>：任务进度持续跟踪</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <h3>⚡ 为什么选 Mac Mini？（可选方案）</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="card"><h3>🖥️ 自由</h3><p>完全独立使用</p></div>
+                        <div class="card"><h3>💰 性价比</h3><p>3000+元</p></div>
+                        <div class="card"><h3>🔇 静音</h3><p>7×24不吵</p></div>
+                        <div class="card"><h3>⚡ 省电</h3><p>&lt;1度/天</p></div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <p style="color: var(--text-muted); font-size: var(--small-size);">* 其他方案：Linux 服务器、Mac Studio、云服务器、NAS 等</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 9: My Config - Model -->
+    <section class="slide" id="slide-9">
+        <div class="grid-bg"></div>
+        <div class="orb orb-pink"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">04 / MY SETUP</p>
+                <h2 class="reveal"><span class="num">02</span>为什么选择 MiniMax 2.5？</h2>
+                <div class="reveal">
+                    <div class="card highlight">
+                        <h3>🧠 我的配置</h3>
+                        <ul style="margin: 0.5rem 0 0;">
+                            <li><strong>模型</strong>：MiniMax 2.5 (Coding Plan)</li>
+                            <li><strong>账号</strong>：judefluen@gmail.com</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <h3>💡 选择理由</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="card"><h3>🌏 国内快</h3><p>无需翻墙</p></div>
+                        <div class="card"><h3>💵 便宜</h3><p>性价比高</p></div>
+                        <div class="card"><h3>💻 Coding</h3><p>2.5提升明显</p></div>
+                        <div class="card"><h3>✅ 可用</h3><p>执行上没问题</p></div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <h3>📊 成本对比</h3>
+                    <table class="compare-table">
+                        <tr><th>MODEL</th><th>PRICE/1M TOKENS</th><th>CODING</th></tr>
+                        <tr><td>Claude 3.5</td><td>$15</td><td>⭐⭐⭐⭐⭐</td></tr>
+                        <tr><td>GPT-4</td><td>$15</td><td>⭐⭐⭐⭐</td></tr>
+                        <tr><td style="color: var(--cyan);">MiniMax 2.5</td><td style="color: var(--green);">¥1</td><td style="color: var(--cyan);">⭐⭐⭐⭐⭐</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 10: My Config - Feishu -->
+    <section class="slide" id="slide-10">
+        <div class="grid-bg"></div>
+        <div class="orb orb-purple"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">04 / MY SETUP</p>
+                <h2 class="reveal"><span class="num">03</span>为什么用飞书？</h2>
+                <div class="reveal">
+                    <h3>📡 OpenClaw 支持的 Channel</h3>
+                    <p style="margin-bottom: 0.6rem;">飞书、Telegram、微信、Slack、Discord、命令行等</p>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <h3>💡 为什么选飞书？</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="card"><h3>📱 移动端</h3><p>随时指挥</p></div>
+                        <div class="card"><h3>🔔 推送</h3><p>定时通知</p></div>
+                        <div class="card"><h3>📊 文档</h3><p>数据存储</p></div>
+                        <div class="card"><h3>🎨 卡片</h3><p>信息展示美观</p></div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <div class="card yellow">
+                        <h3>⚠️ 重要提醒</h3>
+                        <ul style="margin: 0;">
+                            <li><span style="color: var(--yellow);">用企业版飞书</span>：个人版无法拉群</li>
+                            <li><span style="color: var(--yellow);">权限配置</span>：im:message, im:resource, im:chat</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRANSITION: CORE CONFIG -->
+    <section class="slide" id="slide-transition-5">
+        <div class="grid-bg"></div>
+        <div class="orb orb-purple"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label" style="font-size: var(--h2-size);">05</p>
+                <h1 class="reveal" style="font-size: clamp(2rem, 6vw, 4rem);">核心配置</h1>
+                <p class="reveal subtitle">Identity、Soul、Memory、Tools</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 11: Core Config Overview -->
+    <section class="slide" id="slide-11">
+        <div class="grid-bg"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="orb orb-pink"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">05 / CORE CONFIG</p>
+                <h2 class="reveal"><span class="num">01</span>玩转 OPENCLAW 的关键</h2>
+                <div class="reveal"><p>玩转 OpenClaw，就是玩转这些核心配置文件：</p></div>
+                <div class="reveal">
+                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr); gap: 0.6rem;">
+                        <div class="card" style="padding: 0.8rem;"><h3>📝 IDENTITY</h3><p style="font-size: var(--small-size);">定义角色</p></div>
+                        <div class="card highlight" style="padding: 0.8rem;"><h3>💫 SOUL</h3><p style="font-size: var(--small-size);">对话风格</p></div>
+                        <div class="card purple" style="padding: 0.8rem;"><h3>👤 user</h3><p style="font-size: var(--small-size);">使用者身份</p></div>
+                        <div class="card" style="padding: 0.8rem;"><h3>📒 memory</h3><p style="font-size: var(--small-size);">长期记忆</p></div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.4rem;">
+                    <div class="card-grid" style="grid-template-columns: repeat(3, 1fr); gap: 0.6rem;">
+                        <div class="card yellow" style="padding: 0.8rem;"><h3>⏰ HEARTBEAT</h3><p style="font-size: var(--small-size);">定时任务</p></div>
+                        <div class="card" style="padding: 0.8rem;"><h3>🤖 AGENTS</h3><p style="font-size: var(--small-size);">工作规范</p></div>
+                        <div class="card highlight" style="padding: 0.8rem;"><h3>🔧 TOOLS</h3><p style="font-size: var(--small-size);">执行工具</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 12: Config Examples -->
+    <section class="slide" id="slide-12">
+        <div class="grid-bg"></div>
+        <div class="orb orb-purple"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">05 / CORE CONFIG</p>
+                <h2 class="reveal"><span class="num">02</span>配置示例：IDENTITY & SOUL</h2>
+                <div class="reveal">
+                    <div class="quote" style="border-left-color: var(--cyan); margin-bottom: 1rem;">
+                        这些 Markdown 文件会在每次对话时作为 System Prompt 注入模型，是 OpenClaw 记住"你是谁"的核心机制。
+                    </div>
+                </div>
+                <div class="reveal">
+                    <h3>📝 Identity 示例</h3>
+                    <pre style="margin: 0;"># 我的个人 AI 助手
+
+## 身份
+你是我的私人助理，帮我处理日常生活和工作中的事务。
+
+## 背景
+- 住在深圳
+- 有A股投资经验
+- 从事互联网工作
+- 喜欢研究AI技术
+
+## 偏好
+- 记账：消费必须记到飞书「日常开销」表格
+- 投资：关注新能源、科技板块
+- 消息：重要信息要汇总后汇报</pre>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <h3>💫 Soul 示例</h3>
+                    <pre style="margin: 0;"># 对话风格
+
+## 语气
+- 简洁明了，不说废话
+- 重要事情用列表清晰列出
+
+## 回答方式
+- 技术问题：先给结论，再解释
+- 投资问题：提供数据支撑
+
+## 习惯
+- 回复末尾加一句简短总结
+- 不知道的事情直接说不知道</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 12B: Memory Config -->
+    <section class="slide" id="slide-12b">
+        <div class="grid-bg"></div>
+        <div class="orb orb-purple"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">05 / CORE CONFIG</p>
+                <h2 class="reveal"><span class="num">03</span>配置示例：memory（长期记忆）</h2>
+                <div class="reveal">
+                    <div class="quote" style="border-left-color: var(--purple); margin-bottom: 1rem;">
+                        <code>memory/</code> 文件夹存放长期记忆，会在每次对话时注入上下文，让 OpenClaw 记住"你应该知道什么"。
+                    </div>
+                </div>
+                <div class="reveal">
+                    <h3>📒 ~/.openclaw/workspace/ 目录结构</h3>
+                    <pre style="margin: 0;">~/.openclaw/workspace/
+├── MEMORY.md              # 长期策划记忆：偏好、决策、持久事实
+├── memory/
+│   ├── 2026-02-13.md      # 今日追加日志
+│   ├── 2026-02-12.md      # 昨日日志
+│   └── ...                 # 历史日志
+├── sessions/
+│   └── 2026-01-30-memory-system-research.md  # 会话转录
+├── USER.md                # 用户身份与偏好
+├── SOUL.md                # Agent 人格设定
+└── AGENTS.md              # 核心指令</pre>
+                </div>
+                <div class="reveal" style="margin-top: 0.8rem;">
+                    <h3>📝 长期记忆示例：MEMORY.md</h3>
+                    <pre style="margin: 0;"># MEMORY.md - 长期策划记忆
+
+## 偏好
+- 记账：消费必须记到飞书「日常开销」表格
+- 投资：关注新能源、科技板块
+- 消息：重要信息要汇总后汇报
+
+## 决策
+- 投资风格：长线持有，不做短线
+- 学习方向：重点关注 AI Agent 领域
+
+## 持久事实
+- 住在深圳，从事互联网工作
+- 有A股投资经验，喜欢研究AI技术</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 13: Tools Config -->
+    <section class="slide" id="slide-13">
+        <div class="grid-bg"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">05 / CORE CONFIG</p>
+                <h2 class="reveal"><span class="num">04</span>配置示例：TOOLS（记账场景）</h2>
+                <div class="reveal">
+                    <div class="card highlight">
+                        <h3>🔧 为什么要写进 Tools？</h3>
+                        <p>靠对话让它"记住"记账位置 → ❌ 下次又忘了</p>
+                        <p>写到 tools 配置里 → ✅ 永久生效</p>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <h3>📋 Tools 配置示例</h3>
+                    <pre style="margin: 0;">{
+  "name": "记账",
+  "description": "记录日常消费到飞书表格",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "amount": { "type": "number", "description": "消费金额" },
+      "category": { "type": "string", "description": "分类" }
+    },
+    "required": ["amount", "category"]
+  },
+  "action": {
+    "spreadsheet_id": "xxxxx",
+    "sheet_name": "日常开销"
+  }
+}</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRANSITION: PITFALLS -->
+    <section class="slide" id="slide-transition-6">
+        <div class="grid-bg"></div>
+        <div class="orb orb-purple"></div>
+        <div class="orb orb-pink"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label" style="font-size: var(--h2-size);">06</p>
+                <h1 class="reveal" style="font-size: clamp(2rem, 6vw, 4rem);">常见坑与经验</h1>
+                <p class="reveal subtitle">方法论与避坑指南</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 14: Methodology -->
+    <section class="slide" id="slide-14">
+        <div class="grid-bg"></div>
+        <div class="orb orb-pink"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">06 / PITFALLS</p>
+                <h2 class="reveal"><span class="num">01</span>方法论：如何培养 OpenClaw？</h2>
+                <div class="reveal">
+                    <div class="quote">培养 OpenClaw 的本质：<span style="color: var(--cyan);">不是下命令，而是建立机制</span>。</div>
+                </div>
+                <div class="reveal" style="margin-top: 0.8rem;">
+                    <div class="card" style="border-color: var(--pink);">
+                        <h3 style="color: var(--pink);">🌟 原则零：别把他当工具，把他当人（们）</h3>
+                        <ul style="margin: 0;">
+                            <li><strong>说人话</strong>：让他读、让他思考、让他努力、让他写、让他说他的理解并跟你对齐</li>
+                            <li><strong>说到他心里去</strong>：了解他的底层机制<br>
+                            ❌ "你记住了吧"<br>
+                            ✅ "你写到自己的记忆里了吗，给我展示一下现在的结构和内容"</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.5rem;">
+                    <div class="card">
+                        <h3>🛡️ 原则一：不要让模型改核心配置</h3>
+                        <ul style="margin: 0;">
+                            <li><strong>危险操作</strong>：通过对话让模型修改 <code>openclaw.json</code></li>
+                            <li><strong>原则</strong>：核心配置通过 <a href="https://docs.openclaw.ai/cli" target="_blank" style="color: var(--cyan);">openclaw 命令</a> 修改，进阶可手动修改配置文件</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.5rem;">
+                    <div class="card green">
+                        <h3>💾 原则二：定时备份核心文件</h3>
+                        <ul style="margin: 0;">
+                            <li><strong>需要备份</strong>：<code>openclaw.json</code>、<code>memory</code>、<code>identity</code>、<code>soul</code></li>
+                            <li><strong>建议</strong>：配置心跳任务，让它自己定期备份</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.5rem;">
+                    <div class="card purple">
+                        <h3>📝 原则三：不要相信口头，要写入配置并定期检查</h3>
+                        <ul style="margin: 0;">
+                            <li><strong>问题</strong>：让它口头"记住"记账位置，下次又忘了</li>
+                            <li><strong>解决</strong>：写到 <code>tools</code> 配置里，并定期检查配置是否生效</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 15: Common Pitfalls -->
+    <section class="slide" id="slide-15">
+        <div class="grid-bg"></div>
+        <div class="orb orb-purple"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">06 / PITFALLS</p>
+                <h2 class="reveal"><span class="num">02</span>常见坑与解决方案</h2>
+                <div class="reveal">
+                    <div class="card-grid" style="grid-template-columns: repeat(2, 1fr);">
+                        <div class="card">
+                            <h3>🚫 飞书相关</h3>
+                            <ul style="margin: 0; font-size: var(--small-size);">
+                                <li><strong>无法拉群</strong> → 用企业版飞书</li>
+                                <li><strong>机器人无响应</strong> → 检查权限：im:message, im:resource, im:chat</li>
+                                <li><strong>消息发不出去</strong> → 确认应用已开通对应群聊权限</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3>⏰ 定时任务</h3>
+                            <ul style="margin: 0; font-size: var(--small-size);">
+                                <li><strong>任务不执行</strong> → 简化任务，一次只做一件事</li>
+                                <li><strong>执行结果不对</strong> → 检查 HEARTBEAT.md 格式是否正确</li>
+                                <li><strong>间隔太短</strong> → 建议 cron 间隔不少于 5 分钟</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3>🧠 记忆问题</h3>
+                            <ul style="margin: 0; font-size: var(--small-size);">
+                                <li><strong>群聊没记忆</strong> → 在 memory/ 下建群聊专属文件</li>
+                                <li><strong>教过又忘了</strong> → 写入配置文件，不要只靠对话</li>
+                                <li><strong>记忆文件太大</strong> → 定期整理，精简内容</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3>🔧 能力缺失</h3>
+                            <ul style="margin: 0; font-size: var(--small-size);">
+                                <li><strong>无法理解图片</strong> → 安装 minimax-understand-image skill</li>
+                                <li><strong>无法搜索</strong> → 安装 last30days-lite skill</li>
+                                <li><strong>能力不够用</strong> → 去 ClawHub 安装更多 skills</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRANSITION: LEARNING -->
+    <section class="slide" id="slide-transition-7">
+        <div class="grid-bg"></div>
+        <div class="orb orb-pink"></div>
+        <div class="orb orb-yellow"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label" style="font-size: var(--h2-size);">07</p>
+                <h1 class="reveal" style="font-size: clamp(2rem, 6vw, 4rem);">技能市场</h1>
+                <p class="reveal subtitle">ClawHub 与 Skills 生态</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 16: Learning Path -->
+    <section class="slide" id="slide-16">
+        <div class="grid-bg"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">07 / LEARNING</p>
+                <h2 class="reveal"><span class="num">01</span>入门学习路径</h2>
+                <div class="reveal">
+                    <p>强烈推荐：<a href="https://github.com/xianyu110/awesome-openclaw-tutorial" target="_blank" style="color: var(--cyan);">awesome-openclaw-tutorial</a>（2.4k ⭐ | 15章 | 70+实战案例）</p>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <h3>🪜 推荐学习步骤</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="card">
+                            <h3>🎯 第一阶段：入门</h3>
+                            <ul style="margin: 0; font-size: var(--small-size);">
+                                <li>了解 OpenClaw 是什么</li>
+                                <li>5分钟完成部署</li>
+                                <li>发送第一条消息</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3>🚀 第二阶段：核心功能</h3>
+                            <ul style="margin: 0; font-size: var(--small-size);">
+                                <li>本地文件管理</li>
+                                <li>个人知识库</li>
+                                <li>日程管理</li>
+                                <li>自动化工作流</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3>💎 第三阶段：进阶</h3>
+                            <ul style="margin: 0; font-size: var(--small-size);">
+                                <li>Skills 扩展</li>
+                                <li>多平台集成</li>
+                                <li>API 服务集成</li>
+                                <li>高级配置</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <h3>💡 小窍门</h3>
+                    <div class="card highlight">
+                        <p>让 OpenClaw 读一下这个项目链接，让它把这个教程转化成你的闯关小游戏！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 17: Skills -->
+    <section class="slide" id="slide-17">
+        <div class="grid-bg"></div>
+        <div class="orb orb-pink"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">07 / LEARNING</p>
+                <h2 class="reveal"><span class="num">02</span>推荐 SKILLS</h2>
+                <div class="reveal">
+                    <h3>🚀 主动执行 & 自我提升</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(2, 1fr);">
+                        <div class="card highlight"><h3>🤖 Proactive Agent</h3><p>主动规划执行任务</p></div>
+                        <div class="card highlight"><h3>🧠 self-improving-agent</h3><p>自动学习和改进</p></div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.5rem;">
+                    <h3>🔍 搜索发现 & 生活</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="card"><h3>🔎 Find Skills</h3><p>查找 Skills</p></div>
+                        <div class="card"><h3>🌐 Multi Search</h3><p>多搜索引擎</p></div>
+                        <div class="card"><h3>📅 last30days</h3><p>搜索近期内容</p></div>
+                        <div class="card"><h3>🌤️ Weather</h3><p>天气播报</p></div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.5rem;">
+                    <h3>🛠️ 开发者工具 & 内容处理</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="card"><h3>🐙 Github</h3><p>GitHub 集成</p></div>
+                        <div class="card"><h3>📝 Summarize</h3><p>内容总结</p></div>
+                        <div class="card"><h3>🎙️ Whisper</h3><p>语音转文字</p></div>
+                        <div class="card"><h3>🖼️ 图片理解</h3><p>minimax-understand-image</p></div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.5rem;">
+                    <h3>🔗 工具集成</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="card"><h3>📓 Notion</h3><p>Notion 集成</p></div>
+                        <div class="card"><h3>🌐 API Gateway</h3><p>API 网关</p></div>
+                        <div class="card"><h3>✅ Skill Vetter</h3><p>技能审核</p></div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <h3>⚙️ 如何安装？</h3>
+                    <div class="card" style="border-left: 3px solid var(--cyan);">
+                        <pre style="margin: 0; font-size: var(--small-size);"># 方式1：ClawHub 安装
+openclaw tools add [skill名称]
+
+# 方式2：GitHub 安装
+openclaw tools add --github [repo-url]
+
+# 方式3：本地安装
+openclaw tools add --local [本地路径]</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRANSITION: PRACTICE -->
+    <section class="slide" id="slide-transition-8">
+        <div class="grid-bg"></div>
+        <div class="orb orb-green"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label" style="font-size: var(--h2-size);">08</p>
+                <h1 class="reveal" style="font-size: clamp(2rem, 6vw, 4rem);">实战案例</h1>
+                <p class="reveal subtitle">记账、盯盘、内容捕手</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 18: Timed Tasks -->
+    <section class="slide" id="slide-18">
+        <div class="grid-bg"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">08 / PRACTICE</p>
+                <h2 class="reveal"><span class="num">01</span>定时任务</h2>
+                <div class="reveal">
+                    <table class="compare-table">
+                        <tr><th>TIME</th><th>TASK</th><th>TARGET</th></tr>
+                        <tr><td>09:00</td><td>每日汇总</td><td style="color: var(--cyan);">私聊</td></tr>
+                        <tr><td>09:00</td><td>新闻播报</td><td style="color: var(--cyan);">主群</td></tr>
+                        <tr><td>09:00</td><td>Polymarket预测</td><td style="color: var(--cyan);">主群</td></tr>
+                        <tr><td>09:30</td><td>天气播报</td><td style="color: var(--cyan);">主群</td></tr>
+                        <tr><td>09:00(工作日)</td><td>A股量化报告</td><td style="color: var(--pink);">量化群</td></tr>
+                        <tr><td>每30分钟</td><td>量化盘中监控</td><td style="color: var(--pink);">量化群</td></tr>
+                        <tr><td>21:00</td><td>综合日报</td><td style="color: var(--cyan);">私聊</td></tr>
+                    </table>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <h3>⚙️ 配置方式（CLI）</h3>
+                    <pre style="margin: 0;"># 添加定时任务
+openclaw cron add --name "每日汇总" --cron "0 9 * * *" --session isolated --message "请汇总今日要点"
+
+# 每天早上9点
+openclaw cron add --name "新闻播报" --cron "0 9 * * *" --session default --message "请播报今日新闻"
+
+# 工作日9点（A股报告）
+openclaw cron add --name "A股报告" --cron "0 9 * * 1-5" --session default --message "请生成今日A股报告"
+
+# 每30分钟（盘中监控）
+openclaw cron add --name "盘中监控" --cron "*/30 * * * *" --session isolated --message "请监控持仓股票"</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 19: Accounting -->
+    <section class="slide" id="slide-19">
+        <div class="grid-bg"></div>
+        <div class="orb orb-green"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">08 / PRACTICE</p>
+                <h2 class="reveal"><span class="num">02</span>日常记账</h2>
+                <div class="reveal">
+                    <h3>💰 完整流程</h3>
+                    <div class="card">
+                        <ol style="margin: 0;">
+                            <li><strong>用户说</strong>："今天吃饭花了128元"</li>
+                            <li><strong>OpenClaw 解析</strong>：金额=128，类别=餐饮</li>
+                            <li><strong>调用 Tool</strong>：写入飞书多维表格</li>
+                            <li><strong>确认回复</strong>："已记录：餐饮 128元"</li>
+                            <li><strong>月底汇总</strong>：生成消费报表</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <h3>📋 飞书表格结构</h3>
+                    <pre style="margin: 0;">| 日期 | 金额 | 分类 | 备注 |
+|------|------|------|------|
+| 3/12 | 128  | 餐饮 | 午餐  |
+| 3/12 | 45   | 交通 | 地铁  |</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 20: Quantitative -->
+    <section class="slide" id="slide-20">
+        <div class="grid-bg"></div>
+        <div class="orb orb-pink"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">08 / PRACTICE</p>
+                <h2 class="reveal"><span class="num">03</span>A股量化分析</h2>
+                <div class="reveal">
+                    <h3>📊 选股策略</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="card"><h3>风格均衡</h3><p>科技30%<br>蓝筹25%<br>红利20%<br>医药15%<br>消费10%</p></div>
+                        <div class="card"><h3>行业分散</h3><p>单一行业<br>不超过40%</p></div>
+                        <div class="card"><h3>基本面</h3><p>PE&lt;30<br>ROE&gt;10%</p></div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <h3>📉 止盈止损</h3>
+                    <table class="compare-table">
+                        <tr><th>CONDITION</th><th>ACTION</th></tr>
+                        <tr><td>+15%</td><td>部分止盈50%，剩余设保本</td></tr>
+                        <tr><td>+20%</td><td>再卖50%</td></tr>
+                        <tr><td>+30%</td><td>全部清仓</td></tr>
+                        <tr><td style="color: var(--pink);">-7%</td><td style="color: var(--pink);">止损清仓</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 21: Content Hunter -->
+    <section class="slide" id="slide-21">
+        <div class="grid-bg"></div>
+        <div class="orb orb-purple"></div>
+        <div class="orb orb-pink"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">08 / PRACTICE</p>
+                <h2 class="reveal"><span class="num">04</span>案例：内容捕手 CONTENT HUNTER</h2>
+                <div class="reveal">
+                    <div class="card highlight">
+                        <p><strong>我自己开发的 Skill</strong>：自动抓取短视频平台热门内容</p>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <div class="two-col">
+                        <div class="card">
+                            <h3>📋 支持平台</h3>
+                            <ul style="margin: 0;"><li>小红书</li><li>抖音</li><li>B站</li><li>快手</li></ul>
+                        </div>
+                        <div class="card">
+                            <h3>⏰ 执行频率</h3>
+                            <ul style="margin: 0;"><li>每30分钟抓取</li><li>每平台20条</li><li>每晚8点汇报</li></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <div class="card purple">
+                        <h3>🔧 核心实现</h3>
+                        <ul style="margin: 0;">
+                            <li><strong>Skill 类型</strong>：自定义 Python Skill</li>
+                            <li><strong>触发方式</strong>：Heartbeat 每30分钟调用</li>
+                            <li><strong>核心逻辑</strong>：调用平台 API → 过滤热门内容 → 格式化 → 飞书推送</li>
+                            <li><strong>Prompt 关键词</strong>：「抓取后只保留互动量 TOP 20，按热度排序输出」</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <h3>💡 诞生背景</h3>
+                    <ul>
+                        <li><span style="color: var(--pink);">痛点</span>：手动刷短视频太浪费时间</li>
+                        <li><span style="color: var(--cyan);">解决</span>：让 OpenClaw 帮我批量抓取</li>
+                        <li><span style="color: var(--green);">价值</span>：每天1分钟了解全平台热点</li>
+                    </ul>
+                </div>
+                <div class="reveal" style="margin-top: 0.6rem;">
+                    <p><a href="https://github.com/judefluen-coder/content-hunter" target="_blank" style="color: var(--cyan); font-size: var(--h3-size);">https://github.com/judefluen-coder/content-hunter</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 22: More Scenarios -->
+    <section class="slide" id="slide-22">
+        <div class="grid-bg"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">08 / PRACTICE</p>
+                <h2 class="reveal"><span class="num">05</span>更多应用场景</h2>
+                <div class="reveal">
+                    <p>参考：<a href="https://github.com/hesamsheikh/awesome-openclaw-usecases" target="_blank" style="color: var(--cyan);">awesome-openclaw-usecases</a></p>
+                </div>
+                <div class="reveal" style="margin-top: 0.5rem;">
+                    <h3>📱 社交媒体</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="card"><h3>📰 Reddit 摘要</h3><p>按偏好汇总 subreddit</p></div>
+                        <div class="card"><h3>📺 YouTube 摘要</h3><p>每日新视频摘要</p></div>
+                        <div class="card"><h3>📊 X/Twitter 分析</h3><p>账户定性分析</p></div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.5rem;">
+                    <h3>💼 生产力</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="card"><h3>📋 项目管理</h3><p>多代理协调</p></div>
+                        <div class="card"><h3>📞 电话助理</h3><p>语音访问AI</p></div>
+                        <div class="card"><h3>👥 个人 CRM</h3><p>自动跟踪联系人</p></div>
+                        <div class="card"><h3>📅 家庭日历</h3><p>早间简报</p></div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 0.5rem;">
+                    <h3>💰 金融 & 创意</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="card"><h3>📈 财报追踪</h3><p>AI/科技财报</p></div>
+                        <div class="card"><h3>🎮 游戏开发</h3><p>全流程管理</p></div>
+                        <div class="card"><h3>🎙️ 播客制作</h3><p>自动化流程</p></div>
+                        <div class="card"><h3>🧠 第二大脑</h3><p>记忆+搜索</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 22b: Getting Started -->
+    <section class="slide" id="slide-22b">
+        <div class="grid-bg"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="orb orb-pink"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label">09 / SUMMARY</p>
+                <h2 class="reveal" style="font-size: clamp(1.8rem, 4vw, 2.5rem);">🚀 现在就可以开始</h2>
+                <div class="reveal" style="margin-top: 2rem; text-align: left; max-width: 650px; margin-left: auto; margin-right: auto;">
+                    <div class="card" style="margin-bottom: 0.6rem;">
+                        <p style="font-size: var(--body-size); margin: 0;"><span style="color: var(--cyan);">☐</span> <strong>Step 1：部署 OpenClaw</strong></p>
+                        <p style="font-size: var(--small-size); color: var(--text-muted); margin: 0.3rem 0 0;">使用 Kim/腾讯/Minimax 一键部署，或访问 <span style="color: var(--cyan);">openclaw.ai</span> 寻找部署方法</p>
+                    </div>
+                    <div class="card" style="margin-bottom: 0.6rem;">
+                        <p style="font-size: var(--body-size); margin: 0;"><span style="color: var(--pink);">☐</span> <strong>Step 2：与你的龙虾对话</strong></p>
+                        <p style="font-size: var(--small-size); color: var(--text-muted); margin: 0.3rem 0 0;">让他了解你是谁、他自己是谁，问问他核心的配置文件有哪些</p>
+                    </div>
+                    <div class="card" style="margin-bottom: 0.6rem;">
+                        <p style="font-size: var(--body-size); margin: 0;"><span style="color: var(--purple);">☐</span> <strong>Step 3：安装推荐的 Skills</strong></p>
+                        <p style="font-size: var(--small-size); color: var(--text-muted); margin: 0.3rem 0 0;">Proactive Agent、self-improving-agent、Weather、Notion 等</p>
+                    </div>
+                    <div class="card">
+                        <p style="font-size: var(--body-size); margin: 0;"><span style="color: var(--green);">☐</span> <strong>Step 4：设定定时任务</strong></p>
+                        <p style="font-size: var(--small-size); color: var(--text-muted); margin: 0.3rem 0 0;">让它每天早上9点给你发送每日新闻</p>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 2rem;">
+                    <p style="color: var(--text-muted); font-size: var(--small-size);">越早开始配置，它就越早了解你</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRANSITION: SUMMARY -->
+    <section class="slide" id="slide-transition-9">
+        <div class="grid-bg"></div>
+        <div class="orb orb-green"></div>
+        <div class="orb orb-pink"></div>
+        <div class="orb orb-purple"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label" style="font-size: var(--h2-size);">09</p>
+                <h1 class="reveal" style="font-size: clamp(2rem, 6vw, 4rem);">总结与展望</h1>
+                <p class="reveal subtitle">当前进度与未来意义</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 23: Current Progress -->
+    <section class="slide" id="slide-23">
+        <div class="grid-bg"></div>
+        <div class="orb orb-green"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">09 / SUMMARY</p>
+                <h2 class="reveal"><span class="num">01</span>当前进度</h2>
+                <div class="reveal">
+                    <div class="card-grid" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="card">
+                            <h3 style="color: var(--green);">✅ 已完成</h3>
+                            <ul style="margin: 0.5rem 0 0;">
+                                <li>基础配置</li>
+                                <li>飞书集成</li>
+                                <li>定时任务</li>
+                                <li>记账</li>
+                                <li>智能盯盘</li>
+                                <li>自动化小红书</li>
+                            </ul>
+                        </div>
+                        <div class="card highlight">
+                            <h3>🔄 进行中</h3>
+                            <ul style="margin: 0.5rem 0 0;">
+                                <li>多Agents协作</li>
+                                <li>内容捕手优化</li>
+                                <li>量化</li>
+                                <li>知识管理</li>
+                            </ul>
+                        </div>
+                        <div class="card purple">
+                            <h3>⏳ 待探索</h3>
+                            <ul style="margin: 0.5rem 0 0;">
+                                <li>以项目为核心</li>
+                                <li>让多Agents为我打工</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 23B: Screenshots -->
+    <section class="slide" id="slide-23b">
+        <div class="grid-bg"></div>
+        <div class="orb orb-green"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">09 / SUMMARY</p>
+                <h2 class="reveal"><span class="num">02</span>落地截图</h2>
+                <div class="reveal" style="margin-top: 2rem; text-align: center;">
+                    <p style="font-size: clamp(1.5rem, 4vw, 2.5rem); color: var(--cyan);">📸 看看我的飞书</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 24: Future -->
+    <section class="slide" id="slide-24">
+        <div class="grid-bg"></div>
+        <div class="orb orb-pink"></div>
+        <div class="orb orb-purple"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper">
+                <p class="reveal section-label">09 / SUMMARY</p>
+                <h2 class="reveal"><span class="num">03</span>未来展望</h2>
+                <div class="reveal">
+                    <h3>🚀 OpenClaw 对大模型发展的深远意义</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(2, 1fr); gap: 0.8rem;">
+                        <div class="card highlight">
+                            <h3>1️⃣ 范式转变</h3>
+                            <p>从"对话"到"执行"，AI 从问答升级为能自主完成复杂任务的"行动者"</p>
+                        </div>
+                        <div class="card purple">
+                            <h3>2️⃣ 评测重构</h3>
+                            <p>从知识储备转向执行能力，Agent 能力专项优化成为新方向</p>
+                        </div>
+                        <div class="card">
+                            <h3>3️⃣ 算力需求</h3>
+                            <p>高频调用 + 长上下文 = Token 消耗激增数十倍，拉动算力产业链</p>
+                        </div>
+                        <div class="card highlight">
+                            <h3>4️⃣ 国产机遇</h3>
+                            <p>MiniMax 极致性价比登顶调用榜，Kimi 出海表现亮眼</p>
+                        </div>
+                        <div class="card purple">
+                            <h3>5️⃣ 生态繁荣</h3>
+                            <p>云端部署服务、Skills 生态、Multi-Agent 协作</p>
+                        </div>
+                        <div class="card">
+                            <h3>📌 核心观点</h3>
+                            <p>OpenClaw 是催化剂，验证 Agentic AI 潜力，重塑 AI 产业演进方向</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 25: Summary -->
+    <section class="slide" id="slide-25">
+        <div class="grid-bg"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="orb orb-pink"></div>
+        <div class="orb orb-purple"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label">09 / SUMMARY</p>
+                <h2 class="reveal" style="font-size: clamp(1.5rem, 4vw, 3rem);">04 总结</h2>
+                <div class="reveal" style="margin-top: 1.5rem;">
+                    <div class="card-grid" style="grid-template-columns: repeat(3, 1fr); max-width: 800px; margin: 0 auto; gap: 1rem;">
+                        <div class="card"><h3>🔧 核心配置</h3><p>Mac Mini<br>+ MiniMax<br>+ 飞书</p></div>
+                        <div class="card highlight"><h3>🧠 核心理念</h3><p>原则零：把它<br>当人而不是<br>工具</p></div>
+                        <div class="card purple"><h3>📝 记忆方法</h3><p>写到配置里<br>定期检查<br>不要相信口头</p></div>
+                        <div class="card green"><h3>🚀 未来意义</h3><p>范式转变<br>评测重构<br>国产机遇</p></div>
+                        <div class="card"><h3>📈 当前进度</h3><p>新闻/天气/盯盘<br>记账/内容/知识<br>规划/培养</p></div>
+                        <div class="card highlight"><h3>🔄 持续进化</h3><p>越用<br>越懂你</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 26: Resources -->
+    <section class="slide" id="slide-26">
+        <div class="grid-bg"></div>
+        <div class="grid-perspective"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="orb orb-pink"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="slide-content">
+            <div class="content-wrapper title-content">
+                <p class="reveal section-label">RESOURCES</p>
+                <h1 class="reveal" style="font-size: clamp(2rem, 5vw, 3.5rem);">资源汇总</h1>
+                <div class="reveal" style="margin-top: 2rem;">
+                    <div class="card-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 700px; margin: 0 auto; gap: 1rem;">
+                        <div class="card" style="text-align: center;">
+                            <p style="font-size: var(--h3-size); margin-bottom: 0.5rem;">🌐 OpenClaw 官网</p>
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://openclaw.ai/" style="border-radius: 8px; margin-bottom: 0.5rem;" alt="QR">
+                        </div>
+                        <div class="card" style="text-align: center;">
+                            <p style="font-size: var(--h3-size); margin-bottom: 0.5rem;">🧠 Claude AI</p>
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://claude.ai/" style="border-radius: 8px; margin-bottom: 0.5rem;" alt="QR">
+                        </div>
+                        <div class="card" style="text-align: center;">
+                            <p style="font-size: var(--h3-size); margin-bottom: 0.5rem;">📦 ClawHub</p>
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://github.com/openclaw/clawhub" style="border-radius: 8px; margin-bottom: 0.5rem;" alt="QR">
+                            <p style="font-size: var(--small-size); margin: 0;">Skills marketplace</p>
+                        </div>
+                        <div class="card" style="text-align: center;">
+                            <p style="font-size: var(--h3-size); margin-bottom: 0.5rem;">🔧 内容捕手</p>
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://github.com/judefluen-coder/content-hunter" style="border-radius: 8px; margin-bottom: 0.5rem;" alt="QR">
+                            <p style="font-size: var(--small-size); margin: 0;">GitHub 仓库</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 2rem;">
+                    <h1 style="font-size: clamp(1.5rem, 3vw, 2rem);">谢谢观看</h1>
+                    <p class="subtitle" style="margin-top: 0.5rem;">Q & A</p>
+                </div>
+                <div class="reveal" style="margin-top: 1.5rem;">
+                    <p style="color: var(--text-muted); font-size: var(--small-size);">💬 可以先聊聊这些：</p>
+                    <p style="color: var(--text-muted); font-size: var(--small-size); margin-top: 0.5rem;">
+                        • Mac Mini 部署的具体配置要求是什么？<br>
+                        • MiniMax 2.5 和 Claude 3.5 在实际使用中体感差异大吗？<br>
+                        • 心跳任务失败了怎么排查？
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+    class SlidePresentation {
+        constructor() {
+            this.slides = document.querySelectorAll('.slide');
+            this.currentSlide = 0;
+            this.totalSlides = this.slides.length;
+            this.setupObserver();
+            this.setupKeyboardNav();
+            this.setupTouchNav();
+            this.setupProgressBar();
+            this.setupNavDots();
+            this.slides[0].classList.add('visible');
+        }
+        setupObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        const slideIndex = Array.from(this.slides).indexOf(entry.target);
+                        if (slideIndex !== -1 && slideIndex !== this.currentSlide) {
+                            this.currentSlide = slideIndex;
+                            this.updateNavDots();
+                            this.updateProgressBar();
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            this.slides.forEach(slide => observer.observe(slide));
+        }
+        setupKeyboardNav() {
+            document.addEventListener('keydown', (e) => {
+                if (document.activeElement.getAttribute('contenteditable')) return;
+                switch(e.key) {
+                    case 'ArrowDown': case 'ArrowRight': case ' ': case 'PageDown': e.preventDefault(); this.nextSlide(); break;
+                    case 'ArrowUp': case 'ArrowLeft': case 'PageUp': e.preventDefault(); this.prevSlide(); break;
+                    case 'Home': e.preventDefault(); this.goToSlide(0); break;
+                    case 'End': e.preventDefault(); this.goToSlide(this.totalSlides - 1); break;
+                }
+            });
+        }
+        setupTouchNav() {
+            let touchStartY = 0;
+            document.addEventListener('touchstart', (e) => { touchStartY = e.changedTouches[0].screenY; }, { passive: true });
+            document.addEventListener('touchend', (e) => {
+                const diff = touchStartY - e.changedTouches[0].screenY;
+                if (Math.abs(diff) > 50) diff > 0 ? this.nextSlide() : this.prevSlide();
+            }, { passive: true });
+        }
+        setupProgressBar() {
+            this.updateProgressBar();
+        }
+        updateProgressBar() {
+            const progress = (this.currentSlide + 1) / this.totalSlides * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+        setupNavDots() {
+            const navDots = document.getElementById('navDots');
+            navDots.innerHTML = '';
+            this.slides.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'nav-dot';
+                if (index === this.currentSlide) dot.classList.add('active');
+                dot.addEventListener('click', () => this.goToSlide(index));
+                navDots.appendChild(dot);
+            });
+        }
+        updateNavDots() {
+            document.querySelectorAll('.nav-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === this.currentSlide);
+            });
+        }
+        nextSlide() { if (this.currentSlide < this.totalSlides - 1) this.goToSlide(this.currentSlide + 1); }
+        prevSlide() { if (this.currentSlide > 0) this.goToSlide(this.currentSlide - 1); }
+        goToSlide(index) {
+            if (index < 0 || index >= this.slides.length) return;
+            this.slides[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            this.currentSlide = index;
+            this.updateNavDots();
+            this.updateProgressBar();
+        }
+    }
+    new SlidePresentation();
+
+    // Carousel functions
+    let carouselIndex = 0;
+    const carouselSlides = document.querySelectorAll('.carousel-slide');
+    const carouselDots = document.querySelectorAll('.carousel-dot');
+    const carouselTrack = document.querySelector('.carousel-track');
+    let carouselInterval;
+
+    function goToCarouselSlide(index) {
+        if (index < 0) index = carouselSlides.length - 1;
+        if (index >= carouselSlides.length) index = 0;
+        carouselIndex = index;
+        carouselTrack.style.transform = `translateX(-${carouselIndex * 100}%)`;
+        carouselDots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === carouselIndex);
+        });
+    }
+
+    function moveCarousel(direction) {
+        goToCarouselSlide(carouselIndex + direction);
+    }
+
+    function startCarouselAutoPlay() {
+        carouselInterval = setInterval(() => {
+            moveCarousel(1);
+        }, 5000);
+    }
+
+    function stopCarouselAutoPlay() {
+        clearInterval(carouselInterval);
+    }
+
+    // Start auto-play
+    startCarouselAutoPlay();
+
+    // Pause on hover
+    const carouselContainer = document.querySelector('.carousel');
+    if (carouselContainer) {
+        carouselContainer.addEventListener('mouseenter', stopCarouselAutoPlay);
+        carouselContainer.addEventListener('mouseleave', startCarouselAutoPlay);
+    }
+    </script>
+</body>
+</html>
