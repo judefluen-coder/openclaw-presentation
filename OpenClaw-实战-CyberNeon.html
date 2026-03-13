@@ -700,8 +700,8 @@
                 <div class="reveal" style="margin-top: 1rem;">
                     <div class="card-grid" style="grid-template-columns: repeat(2, 1fr);">
                         <div class="card">
-                            <h3>📰 每天手动刷新闻</h3>
-                            <p>却总是漏掉重要信息</p>
+                            <h3>🤖 AI 什么话都能接</h3>
+                            <p>但什么活都没法直接干</p>
                         </div>
                         <div class="card">
                             <h3>🧠 跟 AI 说过的偏好</h3>
@@ -712,7 +712,7 @@
                             <p>但它"下班"了</p>
                         </div>
                         <div class="card">
-                            <h3>👔 一个 AI 什么都会一点</h3>
+                            <h3>🤖 一个 AI 什么都会一点</h3>
                             <p>但专业的事做不好</p>
                         </div>
                     </div>
@@ -1032,15 +1032,30 @@
                     </div>
                 </div>
                 <div class="reveal" style="margin-top: 0.6rem;">
-                    <h3>🤝 协作示例：复杂任务分工</h3>
-                    <pre style="margin: 0;">用户需求："帮我分析新能源板块并写一篇公众号文章"
-
-分工流程：
-1. Quant Agent → 拉取A股数据，分析新能源板块
-2. Data Analyst → 整理数据，生成图表
-3. Writer Agent → 根据分析写公众号文章
-4. Editor Agent → 检查语法、优化标题
-5. 最终输出 → 整合成完整文章</pre>
+                    <h3>📋 多 Agents 配置示例</h3>
+                    <pre style="margin: 0; font-size: var(--small-size);">{
+  "agents": {
+    "list": [
+      { "id": "main", "workspace": "~/.openclaw/workspace" },
+      { "id": "content", "workspace": "~/.openclaw/workspace-content" },
+      { "id": "ops", "workspace": "~/.openclaw/workspace-ops" }
+    ]
+  },
+  "channels": {
+    "feishu": {
+      "accounts": {
+        "main": { "appId": "xxx1" },
+        "content": { "appId": "xxx2" },
+        "ops": { "appId": "xxx3" }
+      }
+    }
+  },
+  "bindings": [
+    { "agentId": "main", "match": { "accountId": "main" } },
+    { "agentId": "content", "match": { "accountId": "content" } },
+    { "agentId": "ops", "match": { "accountId": "ops" } }
+  ]
+}</pre>
                 </div>
             </div>
         </div>
